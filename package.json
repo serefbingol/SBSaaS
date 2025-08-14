@@ -1,0 +1,13 @@
+{
+  "name": "sbsass",
+  "private": true,
+  "scripts": {
+    "lint:api": "spectral lint contracts/openapi.yaml",
+    "mock": "prism mock contracts/openapi.yaml --port 4010",
+    "postman:gen": "openapi2postmanv2 -s contracts/openapi.yaml -o contracts/postman/SBSaaS.postman_collection.json -p",
+    "sdk:ts": "openapi-generator-cli generate -i contracts/openapi.yaml -g typescript-fetch -o contracts/sdks/typescript"
+  },
+  "devDependencies": {
+    "@stoplight/spectral-cli": "^6.15.0"
+  }
+}

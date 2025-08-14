@@ -1,0 +1,5 @@
+extends: ./openapi.yaml
+mock:
+  dynamic: true
+  errors:
+    callback: true

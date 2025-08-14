@@ -1,0 +1,16 @@
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/bin/Debug/net9.0/SBSaaS.Common.deps.json
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/bin/Debug/net9.0/SBSaaS.Common.dll
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/bin/Debug/net9.0/SBSaaS.Common.pdb
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/bin/Debug/net9.0/SBSaaS.Domain.dll
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/bin/Debug/net9.0/SBSaaS.Domain.pdb
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.Common.csproj.AssemblyReference.cache
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.Common.GeneratedMSBuildEditorConfig.editorconfig
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.Common.AssemblyInfoInputs.cache
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.Common.AssemblyInfo.cs
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.Common.csproj.CoreCompileInputs.cache
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.Common.sourcelink.json
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.C.6B5F9226.Up2Date
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.Common.dll
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/refint/SBSaaS.Common.dll
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/SBSaaS.Common.pdb
+/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/Debug/net9.0/ref/SBSaaS.Common.dll
