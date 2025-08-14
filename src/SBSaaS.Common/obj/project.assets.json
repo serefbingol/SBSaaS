@@ -1,0 +1,96 @@
+{
+  "version": 3,
+  "targets": {
+    "net9.0": {
+      "SBSaaS.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/SBSaaS.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SBSaaS.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SBSaaS.Domain/1.0.0": {
+      "type": "project",
+      "path": "../SBSaaS.Domain/SBSaaS.Domain.csproj",
+      "msbuildProject": "../SBSaaS.Domain/SBSaaS.Domain.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net9.0": [
+      "SBSaaS.Domain >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "/home/sb/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/SBSaaS.Common.csproj",
+      "projectName": "SBSaaS.Common",
+      "projectPath": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/SBSaaS.Common.csproj",
+      "packagesPath": "/home/sb/.nuget/packages/",
+      "outputPath": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/home/sb/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net9.0"
+      ],
+      "sources": {
+        "/usr/lib/dotnet/library-packs": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "projectReferences": {
+            "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Domain/SBSaaS.Domain.csproj": {
+              "projectPath": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Domain/SBSaaS.Domain.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.100"
+    },
+    "frameworks": {
+      "net9.0": {
+        "targetAlias": "net9.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.109/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

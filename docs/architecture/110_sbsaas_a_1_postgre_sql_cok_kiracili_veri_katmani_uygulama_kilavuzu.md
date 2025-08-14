@@ -1,0 +1,521 @@
+Bu belge **A1** iş paketinin uçtan uca uygulanabilir kılavuzudur. Tek veritabanı + `Tenant_ID` izolasyonu, EF Core yapılandırmaları, global tenant guard, seed verisi ve TimescaleDB/PostGIS opsiyonları dahildir.
+
+---
+
+# 0) Hızlı Özet (DoD)
+
+- EF Core + Npgsql yapılandırıldı, `SbsDbContext` hazır.
+- **Tenant guard**: Tüm `ITenantScoped` varlıklar için `X-Tenant-Id` zorunlu ve otomatik set.
+- Global query filter veya repository guard ile veri okuma/yazma **sadece aktif tenant** için.
+- Başlangıç **Seed**: `System` tenant + örnek domain tablosu (Projects) eklendi.
+- Migration’lar çalıştı; bağlantı ve indeksler hazır.
+- (Opsiyonel) TimescaleDB & PostGIS etkinleştirme talimatı.
+
+---
+
+# 1) NuGet Paketleri
+
+```bash
+# Infrastructure (zaten varsa atla)
+dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore
+(dotnet add) src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore.Relational
+(dotnet add) src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL
+# Migrations aracı
+dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore.Design
+```
+
+---
+
+# 2) Domain Katmanı – Tenant kapsamı ve ortak alanlar
+
+``
+
+```csharp
+namespace SBSaaS.Domain.Common;
+
+public interface ITenantScoped
+{
+    Guid TenantId { get; set; }
+}
+
+public abstract class AuditableEntity
+{
+    public DateTimeOffset CreatedUtc { get; set; }
+    public DateTimeOffset? UpdatedUtc { get; set; }
+}
+```
+
+**Örnek iş varlığı**\
+``
+
+```csharp
+using SBSaaS.Domain.Common;
+
+namespace SBSaaS.Domain.Entities.Projects;
+
+public class Project : AuditableEntity, ITenantScoped
+{
+    public Guid Id { get; set; }
+    public Guid TenantId { get; set; }
+    public string Code { get; set; } = default!;   // unique in tenant
+    public string Name { get; set; } = default!;
+    public string? Description { get; set; }
+}
+```
+
+**Tenant varlığı**\
+`` (daha önce eklenmişti; burada tekrar)
+
+```csharp
+namespace SBSaaS.Domain.Entities;
+
+public class Tenant
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = default!;
+    public string? Culture { get; set; } // e.g. "tr-TR"
+    public string? TimeZone { get; set; } // e.g. "Europe/Istanbul"
+}
+```
+
+---
+
+# 3) Infrastructure – DbContext ve Tenant Guard
+
+``
+
+```csharp
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using SBSaaS.Domain.Entities;
+using SBSaaS.Domain.Entities.Projects;
+using SBSaaS.Domain.Common;
+using SBSaaS.Application.Interfaces;
+
+namespace SBSaaS.Infrastructure.Persistence;
+
+public class SbsDbContext : IdentityDbContext<ApplicationUser>
+{
+    private readonly ITenantContext _tenant;
+
+    public SbsDbContext(DbContextOptions<SbsDbContext> options, ITenantContext tenant)
+        : base(options) => _tenant = tenant;
+
+    public DbSet<Tenant> Tenants => Set<Tenant>();
+    public DbSet<Project> Projects => Set<Project>();
+
+    protected override void OnModelCreating(ModelBuilder b)
+    {
+        base.OnModelCreating(b);
+
+        b.Entity<Tenant>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+        });
+
+        b.Entity<Project>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Code).HasMaxLength(64).IsRequired();
+            e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            e.HasIndex(x => new { x.TenantId, x.Code }).IsUnique();
+        });
+
+        // Global query filter şablonu – ITenantScoped olan tüm entity’lere uygula
+        foreach (var entityType in b.Model.GetEntityTypes())
+        {
+            if (typeof(ITenantScoped).IsAssignableFrom(entityType.ClrType))
+            {
+                var method = typeof(SbsDbContext)
+                    .GetMethod(nameof(SetTenantFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
+                method.MakeGenericMethod(entityType.ClrType)
+                      .Invoke(null, new object[] { this, b });
+            }
+        }
+    }
+
+    // Yeni eklenen/updated entity’lerde TenantId ve zaman damgalarını otomatik ata
+    public override Task<int> SaveChangesAsync(CancellationToken ct = default)
+    {
+        var now = DateTimeOffset.UtcNow;
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            if (entry.Entity is AuditableEntity aud)
+            {
+                if (entry.State == EntityState.Added) aud.CreatedUtc = now;
+                if (entry.State == EntityState.Modified) aud.UpdatedUtc = now;
+            }
+            if (entry.Entity is ITenantScoped scoped)
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    // Insert’te aktif tenant’ı zorunlu kıl
+                    scoped.TenantId = _tenant.TenantId;
+                }
+                else
+                {
+                    // Update/Delete sırasında başka tenant’a erişimi engelle
+                    if (!Equals(scoped.TenantId, _tenant.TenantId))
+                        throw new InvalidOperationException("Cross-tenant access is not allowed.");
+                }
+            }
+        }
+        return base.SaveChangesAsync(ct);
+    }
+
+    private static void SetTenantFilter<TEntity>(SbsDbContext ctx, ModelBuilder b) where TEntity : class
+    {
+        b.Entity<TEntity>().HasQueryFilter(e => !typeof(ITenantScoped).IsAssignableFrom(typeof(TEntity)) ||
+            ((ITenantScoped)e!).TenantId == ctx._tenant.TenantId);
+    }
+}
+```
+
+> Not: Identity tablolarına **global filter** doğrudan uygulanmıyor. Identity erişimleri servis katmanında tenant kontrollü yapılmalı.
+
+---
+
+# 4) TenantContext ve Middleware
+
+`` (varsa atla)
+
+```csharp
+namespace SBSaaS.Application.Interfaces;
+public interface ITenantContext { Guid TenantId { get; } }
+```
+
+``
+
+```csharp
+using SBSaaS.Application.Interfaces;
+
+namespace SBSaaS.API.Infrastructure;
+
+public class HeaderTenantContext : ITenantContext
+{
+    private readonly IHttpContextAccessor _http;
+    public HeaderTenantContext(IHttpContextAccessor http) => _http = http;
+    public Guid TenantId => Guid.TryParse(_http.HttpContext?.Request.Headers["X-Tenant-Id"], out var id) ? id : Guid.Empty;
+}
+```
+
+`` (opsiyonel ama önerilir)
+
+```csharp
+namespace SBSaaS.API.Middleware;
+
+public class TenantMiddleware
+{
+    private readonly RequestDelegate _next;
+    public TenantMiddleware(RequestDelegate next) => _next = next;
+    public async Task InvokeAsync(HttpContext context)
+    {
+        if (!context.Request.Headers.ContainsKey("X-Tenant-Id"))
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync(new { error = "X-Tenant-Id header required" });
+            return;
+        }
+        await _next(context);
+    }
+}
+```
+
+`` (ilgili kayıtlar)
+
+```csharp
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ITenantContext, HeaderTenantContext>();
+app.UseMiddleware<SBSaaS.API.Middleware.TenantMiddleware>();
+```
+
+---
+
+# 5) Configuration & Connection String
+
+``
+
+```json
+{
+  "ConnectionStrings": {
+    "Postgres": "Host=localhost;Port=5432;Database=sbsass;Username=postgres;Password=postgres;"
+  }
+}
+```
+
+`` (DbContext kaydı)
+
+```csharp
+services.AddDbContext<SbsDbContext>(opt =>
+{
+    opt.UseNpgsql(config.GetConnectionString("Postgres"));
+    opt.EnableSensitiveDataLogging(false);
+});
+```
+
+---
+
+# 6) Seed Mekanizması
+
+``
+
+```csharp
+using Microsoft.EntityFrameworkCore;
+using SBSaaS.Domain.Entities;
+using SBSaaS.Domain.Entities.Projects;
+
+namespace SBSaaS.Infrastructure.Seed;
+
+public static class DbSeeder
+{
+    public static async Task SeedAsync(SbsDbContext db)
+    {
+        await db.Database.MigrateAsync();
+
+        if (!await db.Tenants.AnyAsync())
+        {
+            var systemTenant = new Tenant
+            {
+                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Name = "System",
+                Culture = "tr-TR",
+                TimeZone = "Europe/Istanbul"
+            };
+            db.Tenants.Add(systemTenant);
+            await db.SaveChangesAsync();
+        }
+
+        // Örnek proje kaydı (seed), aktif tenant bağlamı gerektiği için manuel set ediliyor
+        var tid = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        if (!await db.Projects.AnyAsync(p => p.TenantId == tid))
+        {
+            db.Projects.Add(new Project
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tid,
+                Code = "PRJ-001",
+                Name = "Kickoff",
+                Description = "Initial seed project"
+            });
+            await db.SaveChangesAsync();
+        }
+    }
+}
+```
+
+`` – başlatırken seed çağrısı
+
+```csharp
+using SBSaaS.Infrastructure.Persistence;
+using SBSaaS.Infrastructure.Seed;
+
+// ... app.Build() sonrası
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SbsDbContext>();
+    await DbSeeder.SeedAsync(db);
+}
+```
+
+---
+
+# 7) Migration Akışı
+
+```bash
+# ilk migration
+ dotnet ef migrations add A1_Initial --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API
+# veritabanını güncelle
+ dotnet ef database update --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API
+```
+
+**Oluşacak tablolar (beklenen)**
+
+- `tenants`
+- `projects`
+- (Identity tabloları) `aspnetusers`, `aspnetroles`, `aspnetuserroles`, ...
+
+> `audit` şeması A2 paketi ile eklenecektir.
+
+---
+
+# 8) Repository Guard (opsiyonel ek koruma)
+
+``
+
+```csharp
+using System.Linq.Expressions;
+using SBSaaS.Domain.Common;
+
+namespace SBSaaS.Application.Interfaces;
+
+public interface IRepository<T> where T : class
+{
+    Task<T?> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
+    Task<IReadOnlyList<T>> ListAsync(Expression<Func<T, bool>>? predicate, CancellationToken ct);
+    Task<T> AddAsync(T entity, CancellationToken ct);
+    Task UpdateAsync(T entity, CancellationToken ct);
+    Task DeleteAsync(T entity, CancellationToken ct);
+}
+```
+
+``
+
+```csharp
+using Microsoft.EntityFrameworkCore;
+using SBSaaS.Application.Interfaces;
+using SBSaaS.Domain.Common;
+
+namespace SBSaaS.Infrastructure.Persistence;
+
+public class EfRepository<T> : IRepository<T> where T : class
+{
+    private readonly SbsDbContext _db;
+    private readonly ITenantContext _tenant;
+    public EfRepository(SbsDbContext db, ITenantContext tenant)
+    { _db = db; _tenant = tenant; }
+
+    public async Task<T?> GetAsync(System.Linq.Expressions.Expression<Func<T, bool>> predicate, CancellationToken ct)
+        => await _db.Set<T>().FirstOrDefaultAsync(predicate, ct);
+
+    public async Task<IReadOnlyList<T>> ListAsync(System.Linq.Expressions.Expression<Func<T, bool>>? predicate, CancellationToken ct)
+        => await (predicate == null ? _db.Set<T>() : _db.Set<T>().Where(predicate)).ToListAsync(ct);
+
+    public async Task<T> AddAsync(T entity, CancellationToken ct)
+    {
+        if (entity is ITenantScoped scoped && _tenant.TenantId != Guid.Empty)
+            scoped.TenantId = _tenant.TenantId;
+        _db.Set<T>().Add(entity);
+        await _db.SaveChangesAsync(ct);
+        return entity;
+    }
+
+    public async Task UpdateAsync(T entity, CancellationToken ct)
+    {
+        if (entity is ITenantScoped scoped && scoped.TenantId != _tenant.TenantId)
+            throw new InvalidOperationException("Cross-tenant access is not allowed.");
+        _db.Set<T>().Update(entity);
+        await _db.SaveChangesAsync(ct);
+    }
+
+    public async Task DeleteAsync(T entity, CancellationToken ct)
+    {
+        if (entity is ITenantScoped scoped && scoped.TenantId != _tenant.TenantId)
+            throw new InvalidOperationException("Cross-tenant access is not allowed.");
+        _db.Set<T>().Remove(entity);
+        await _db.SaveChangesAsync(ct);
+    }
+}
+```
+
+---
+
+# 9) Örnek API – Projects Controller (A1 doğrulama)
+
+``
+
+```csharp
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SBSaaS.Infrastructure.Persistence;
+using SBSaaS.Domain.Entities.Projects;
+
+namespace SBSaaS.API.Controllers;
+
+[ApiController]
+[Route("api/v1/[controller]")]
+[Authorize] // A3 ile netleşecek; şimdilik opsiyonel
+public class ProjectsController : ControllerBase
+{
+    private readonly SbsDbContext _db;
+    public ProjectsController(SbsDbContext db) => _db = db;
+
+    [HttpGet]
+    public async Task<IActionResult> List([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        var query = _db.Projects.AsNoTracking();
+        var total = await query.CountAsync();
+        var items = await query.OrderByDescending(x => x.CreatedUtc)
+                               .Skip((page - 1) * pageSize)
+                               .Take(pageSize)
+                               .ToListAsync();
+        return Ok(new { items, page, pageSize, total });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] Project input)
+    {
+        input.Id = Guid.NewGuid();
+        _db.Projects.Add(input);
+        await _db.SaveChangesAsync();
+        return CreatedAtAction(nameof(Get), new { id = input.Id }, input);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        var proj = await _db.Projects.FindAsync(id);
+        if (proj == null) return NotFound();
+        return Ok(proj);
+    }
+}
+```
+
+> Bu controller, global filter ve SaveChanges guard sayesinde **sadece aktif tenant** verilerini görür.
+
+---
+
+# 10) TimescaleDB & PostGIS (Opsiyonel)
+
+**PostgreSQL eklentilerinin etkinleştirilmesi** (DB admin yetkisiyle):
+
+```sql
+CREATE EXTENSION IF NOT EXISTS timescaledb;
+CREATE EXTENSION IF NOT EXISTS postgis;
+```
+
+**Timeseries tablosu örneği (opsiyonel)**\
+``
+
+```csharp
+using SBSaaS.Domain.Common;
+
+namespace SBSaaS.Domain.Entities.Metrics;
+
+public class TenantMetric : ITenantScoped
+{
+    public Guid TenantId { get; set; }
+    public DateTime TimestampUtc { get; set; } // time_bucket için
+    public string Key { get; set; } = default!; // e.g. active_users
+    public double Value { get; set; }
+}
+```
+
+Migration’da hypertable dönüşümü (örnek):
+
+```sql
+SELECT create_hypertable('tenant_metrics', 'timestamp_utc', if_not_exists => TRUE);
+```
+
+**Spatial alan örneği (opsiyonel)**
+
+```sql
+-- PostGIS ile geometry/geography alanları için örnek
+-- CREATE INDEX ON your_table USING GIST(geom);
+```
+
+---
+
+# 11) Test Notları
+
+- `X-Tenant-Id: 11111111-1111-1111-1111-111111111111` header’ı ile `/api/v1/projects` çağrıları tenant izolasyonunu doğrulamalı.
+- Başka bir tenant GUID’i ile oluşturulan kayıtlar listede görünmemeli (global filter).
+- `Project.Code` aynı tenant içinde tekil, farklı tenantlarda çakışabilir.
+
+---
+
+# 12) Sonraki Paket
+
+- **A2 – Audit Logging**: `audit.change_log` tablo haritalaması + `SaveChanges` interceptor (PII maskeleme) + sorgu indeksleri + arşivleme.
+
