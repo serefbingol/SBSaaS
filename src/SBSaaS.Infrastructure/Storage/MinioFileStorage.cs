@@ -8,36 +8,65 @@ namespace SBSaaS.Infrastructure.Storage;
 public class MinioFileStorage : IFileStorage
 {
     private readonly MinioClient _client;
-    public MinioFileStorage(MinioClient client) => _client = client;
+    private readonly ITenantContext _tenantContext;
+
+    public MinioFileStorage(MinioClient client, ITenantContext tenantContext)
+    {
+        _client = client;
+        _tenantContext = tenantContext;
+    }
 
     public async Task<string> UploadAsync(string bucket, string objectName, Stream data, string contentType, CancellationToken ct)
     {
+        EnsureValidTenantContext();
+        var tenantScopedObjectName = GetTenantScopedObjectName(objectName);
+
         bool found = await _client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucket), ct);
         if (!found) await _client.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucket), ct);
 
         await _client.PutObjectAsync(new PutObjectArgs()
             .WithBucket(bucket)
-            .WithObject(objectName)
+            .WithObject(tenantScopedObjectName)
             .WithStreamData(data)
             .WithObjectSize(data.Length)
             .WithContentType(contentType), ct);
-        return objectName;
+        
+        // Dışarıya sadece orijinal dosya adını döndür, tenant ön ekini değil.
+        return objectName; 
     }
 
-    public Task<Stream> DownloadAsync(string bucket, string objectName, CancellationToken ct)
+    public async Task<Stream> DownloadAsync(string bucket, string objectName, CancellationToken ct)
     {
+        EnsureValidTenantContext();
+        var tenantScopedObjectName = GetTenantScopedObjectName(objectName);
+
         var ms = new MemoryStream();
-        return Task.Run(async () =>
-        {
-            await _client.GetObjectAsync(new GetObjectArgs()
-                .WithBucket(bucket)
-                .WithObject(objectName)
-                .WithCallbackStream(stream => stream.CopyTo(ms)), ct);
-            ms.Position = 0;
-            return (Stream)ms;
-        }, ct);
+        
+        // Task.Run sarmalayıcısı olmadan, daha verimli bir async/await kullanımı.
+        await _client.GetObjectAsync(new GetObjectArgs()
+            .WithBucket(bucket)
+            .WithObject(tenantScopedObjectName)
+            .WithCallbackStream(stream => stream.CopyTo(ms)), ct);
+
+        ms.Position = 0;
+        return ms;
     }
 
     public async Task DeleteAsync(string bucket, string objectName, CancellationToken ct)
-        => await _client.RemoveObjectAsync(new RemoveObjectArgs().WithBucket(bucket).WithObject(objectName), ct);
+    {
+        EnsureValidTenantContext();
+        var tenantScopedObjectName = GetTenantScopedObjectName(objectName);
+        await _client.RemoveObjectAsync(new RemoveObjectArgs().WithBucket(bucket).WithObject(tenantScopedObjectName), ct);
+    }
+
+    private string GetTenantScopedObjectName(string objectName)
+        => $"tenants/{_tenantContext.TenantId}/{objectName}";
+
+    private void EnsureValidTenantContext()
+    {
+        if (_tenantContext.TenantId == Guid.Empty)
+        {
+            throw new InvalidOperationException("A valid tenant context is required for file storage operations.");
+        }
+    }
 }

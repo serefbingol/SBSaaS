@@ -211,14 +211,16 @@ components:
       properties:
         id: { type: string, format: uuid }
         name: { type: string }
-        culture: { type: string, example: tr-TR }
+        culture: { type: string, example: tr-TR, description: "Veri formatlama için kültür (tarih, sayı vb.)." }
+        uiCulture: { type: string, example: tr-TR, description: "UI dili ve kaynak dosyaları için kültür." }
         timeZone: { type: string, example: Europe/Istanbul }
     TenantCreate:
       type: object
       required: [name]
       properties:
         name: { type: string }
-        culture: { type: string }
+        culture: { type: string, description: "Örn: tr-TR" }
+        uiCulture: { type: string, description: "Örn: tr-TR" }
         timeZone: { type: string }
     UserProfile:
       type: object

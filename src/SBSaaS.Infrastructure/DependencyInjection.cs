@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Minio;
 using SBSaaS.Domain.Entities;
@@ -15,15 +16,27 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<SbsDbContext>(opt =>
+        // Tenant ve Audit mekanizmaları için HttpContext'e erişim sağlar.
+        services.AddHttpContextAccessor();
+
+        // TenantId'yi HTTP Header'dan okuyan servisi kaydet.
+        services.AddScoped<ITenantContext, HeaderTenantContext>();
+
+        // Audit log'ları oluşturan interceptor'ı kaydet.
+        services.AddScoped<AuditSaveChangesInterceptor>();
+
+        // DbContext'i, interceptor'ı kullanacak şekilde fabrika metoduyla kaydet.
+        // Bu, önceki yinelenen kaydı düzeltir.
+        services.AddDbContext<SbsDbContext>((sp, opt) =>
         {
             opt.UseNpgsql(config.GetConnectionString("Postgres"));
-            opt.EnableSensitiveDataLogging(false);
+            opt.EnableSensitiveDataLogging(false); // Üretimde false olmalı
+            opt.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
         });
 
         services.AddIdentity<ApplicationUser, IdentityRole>(o =>
         {
-            o.User.RequireUniqueEmail = true;
+            o.User.RequireUniqueEmail = false; // Çok kiracılı yapıda e-posta tenant bazında unique olmalı, global değil.
         })
         .AddEntityFrameworkStores<SbsDbContext>()
         .AddDefaultTokenProviders();
@@ -36,31 +49,23 @@ public static class DependencyInjection
             var endpoint = config.GetValue<string>("Minio:Endpoint");
             var accessKey = config.GetValue<string>("Minio:AccessKey");
             var secretKey = config.GetValue<string>("Minio:SecretKey");
+            var useSsl = config.GetValue<bool?>("Minio:UseSSL") ?? true; // Varsayılan olarak SSL kullan
 
             if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(accessKey) || string.IsNullOrEmpty(secretKey))
             {
                 throw new InvalidOperationException("Minio yapılandırma bilgileri (endpoint, access key, secret key) 'Minio' bölümü altında appsettings.json dosyasında bulunamadı.");
             }
 
-            return (MinioClient)new MinioClient()
+            var minioClient = new MinioClient()
                 .WithEndpoint(endpoint)
-                .WithCredentials(accessKey, secretKey)
-                .Build();
-        });
-        // IFileStorage'ı kaydedin. Bu, MinioClient'ın artık kullanılabilir olmasını sağlar.
-        services.AddScoped<IFileStorage, MinioFileStorage>();
-      
-        services.AddScoped<AuditSaveChangesInterceptor>();
-        // Interceptor'ı servis olarak kaydet
-        services.AddScoped<AuditSaveChangesInterceptor>();
+                .WithCredentials(accessKey, secretKey);
 
-        // DbContext'i factory overload ile kur ve interceptor'ı ekle
-        services.AddDbContext<SbsDbContext>((sp, opt) =>
-        {
-            opt.UseNpgsql(config.GetConnectionString("Postgres"));
-            opt.EnableSensitiveDataLogging(false);
-            opt.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
+            if (useSsl) minioClient.WithSSL();
+            
+            return (MinioClient)minioClient.Build();
         });
+        services.AddScoped<IFileStorage, MinioFileStorage>();
+
         return services;
     }
 }

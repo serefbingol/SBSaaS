@@ -76,6 +76,7 @@ public class Tenant
     public Guid Id { get; set; }
     public string Name { get; set; } = default!;
     public string? Culture { get; set; } // e.g. "tr-TR"
+    public string? UiCulture { get; set; } // e.g. "tr-TR"
     public string? TimeZone { get; set; } // e.g. "Europe/Istanbul"
 }
 ```
@@ -283,6 +284,11 @@ services.AddDbContext<SbsDbContext>(opt =>
 {
     opt.UseNpgsql(config.GetConnectionString("Postgres"));
     opt.EnableSensitiveDataLogging(false);
+
+    // Not: A2 - Audit Logging iş paketiyle birlikte, denetim kaydı için
+    // AuditSaveChangesInterceptor'ın da buraya eklenmesi gerekecektir.
+    // Örnek:
+    // opt.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
 });
 ```
 

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SBSaaS.API.IntegrationTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3b7ad500a863aeb0c08f1f3a2f0613a89ea120c9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b9931fa2e9dfdc9b6cbe3b880cdca1b9fce03f6")]
 [assembly: System.Reflection.AssemblyProductAttribute("SBSaaS.API.IntegrationTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SBSaaS.API.IntegrationTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

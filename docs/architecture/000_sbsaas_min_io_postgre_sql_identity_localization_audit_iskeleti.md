@@ -276,10 +276,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<SbsDbContext>(opt =>
+        services.AddHttpContextAccessor(); // Interceptor'da UserId almak için gerekli
+        services.AddScoped<AuditSaveChangesInterceptor>();
+        services.AddDbContext<SbsDbContext>((sp, opt) =>
         {
             opt.UseNpgsql(config.GetConnectionString("Postgres"));
             opt.EnableSensitiveDataLogging(false);
+            opt.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
         });
 
         services.AddIdentity<ApplicationUser, IdentityRole>(o =>
@@ -295,8 +298,6 @@ public static class DependencyInjection
             .WithCredentials(config["Minio:AccessKey"]!, config["Minio:SecretKey"]!)
             .Build());
         services.AddScoped<IFileStorage, MinioFileStorage>();
-
-        services.AddScoped<AuditSaveChangesInterceptor>();
 
         return services;
     }
