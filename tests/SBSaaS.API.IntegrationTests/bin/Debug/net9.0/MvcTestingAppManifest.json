@@ -1,0 +1,7 @@
+{
+  "SBSaaS.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/sb\/VSCODE_PROJECTS\/GPT5_Saas\/SBSaaS\/src\/SBSaaS.API",
+  "SBSaaS.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/sb\/VSCODE_PROJECTS\/GPT5_Saas\/SBSaaS\/src\/SBSaaS.Application",
+  "SBSaaS.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/sb\/VSCODE_PROJECTS\/GPT5_Saas\/SBSaaS\/src\/SBSaaS.Common",
+  "SBSaaS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/sb\/VSCODE_PROJECTS\/GPT5_Saas\/SBSaaS\/src\/SBSaaS.Domain",
+  "SBSaaS.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/sb\/VSCODE_PROJECTS\/GPT5_Saas\/SBSaaS\/src\/SBSaaS.Infrastructure"
+}

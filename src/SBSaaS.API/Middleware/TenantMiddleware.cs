@@ -7,12 +7,17 @@ public class TenantMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (!context.Request.Headers.ContainsKey("X-Tenant-Id"))
+        // Bu katı bir kontroldür. Bazı endpoint'ler (login, public sayfalar, health, swagger)
+        // için bu kontrolü atlamak isteyebilirsiniz.
+        if (!context.Request.Path.StartsWithSegments("/health") &&
+            !context.Request.Path.StartsWithSegments("/swagger") &&
+            !context.Request.Headers.ContainsKey("X-Tenant-Id"))
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await context.Response.WriteAsJsonAsync(new { error = "X-Tenant-Id header required" });
+            await context.Response.WriteAsJsonAsync(new { error = "X-Tenant-Id header is required." });
             return;
         }
         await _next(context);
     }
 }
+

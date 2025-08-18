@@ -588,9 +588,9 @@ public class TenantMiddleware
 # 11) EF Core Migrations – örnek akış
 
 ```bash
-# design paketlerini gerekirse ekle
- dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore.Design
-
+# Not: Migration işlemleri için `dotnet-ef` aracının global olarak kurulması önerilir:
+# `dotnet tool install --global dotnet-ef`
+# Bu, Microsoft.EntityFrameworkCore.Design paketini projeye ekleme ihtiyacını ortadan kaldırır.
 # migrations
  dotnet ef migrations add Initial --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API
  dotnet ef database update --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API

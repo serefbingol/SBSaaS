@@ -15,6 +15,8 @@ Bu belge **A1** iş paketinin uçtan uca uygulanabilir kılavuzudur. Tek veritab
 
 # 1) NuGet Paketleri
 
+> Not: Bu liste, A1 iş paketi için gereken temel EF Core ve Identity paketlerini içerir. Projenin tamamında MinIO, Serilog gibi diğer işlevler için ek paketler de olacaktır.
+
 ```bash
 # Infrastructure (zaten varsa atla)
 dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore
@@ -22,8 +24,6 @@ dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Micros
 dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL
 # Identity entegrasyonu için (IdentityDbContext)
 dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.AspNetCore.Identity.EntityFrameworkCore
-# Migrations aracı
-dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore.Design
 ```
 
 ---

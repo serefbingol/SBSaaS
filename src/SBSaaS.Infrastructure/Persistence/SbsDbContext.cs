@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SBSaaS.Domain.Entities;
 using SBSaaS.Application.Interfaces;
 using SBSaaS.Domain.Entities.Billing;
+using SBSaaS.Domain.Entities.Projects;
 
 namespace SBSaaS.Infrastructure.Persistence;
 
@@ -14,6 +15,7 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
         => _tenantContext = tenantContext;
 
     public DbSet<Tenant> Tenants => Set<Tenant>();
+    public DbSet<Project> Projects => Set<Project>();
     public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
     public DbSet<Subscription> Subscriptions => Set<Subscription>();
     protected override void OnModelCreating(ModelBuilder builder)
@@ -29,6 +31,14 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
         {
             b.ToTable("change_log", schema: "audit");
             b.HasKey(x => x.Id);
+        });
+
+        builder.Entity<Project>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Code).HasMaxLength(64).IsRequired();
+            e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            e.HasIndex(x => new { x.TenantId, x.Code }).IsUnique();
         });
 
         // Global query filter örneği: Identity tablolarına doğrudan filtre koymak riskli olabilir,

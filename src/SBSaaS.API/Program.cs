@@ -1,21 +1,20 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using SBSaaS.API.Middleware;
 using SBSaaS.Infrastructure;
-using SBSaaS.Infrastructure.Persistence;
 using SBSaaS.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// 1. Add services to the container.
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddHttpContextAccessor(); // Required for HeaderTenantContext
 
 // Tenant Context – basit header temelli örnek (X-Tenant-Id)
 builder.Services.AddScoped<ITenantContext, HeaderTenantContext>();
 
 // Localization – varsayılan tr-TR
-
 var supportedCultures = new[] { "tr-TR", "en-US", "de-DE" };
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -25,7 +24,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = cultures;
 });
 
-builder.Services.AddLocalization(o => o.ResourcesPath = "Resources");
+builder.Services.AddLocalization(o => o.ResourcesPath = "Resources"); // Resource dosyalarının yolu
 
 builder.Services.AddAuthentication()
     .AddGoogle(opt =>
@@ -42,52 +41,35 @@ builder.Services.AddAuthentication()
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddOpenApi();
-builder.Services.AddHttpContextAccessor();
 
-
+// 2. Build the application.
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 3. Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+// Localization middleware
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseMiddleware<SBSaaS.API.Middleware.TenantMiddleware>();
+
+// Custom middleware
+app.UseMiddleware<TenantMiddleware>();
+
+// Auth middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Map endpoints
 app.MapControllers();
-
-// basit health
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+
+// 4. Run the application.
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+// Make the implicit Program class public so it can be accessed by the test project.
+public partial class Program { }
