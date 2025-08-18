@@ -18,8 +18,10 @@ Bu belge **A1** iş paketinin uçtan uca uygulanabilir kılavuzudur. Tek veritab
 ```bash
 # Infrastructure (zaten varsa atla)
 dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore
-(dotnet add) src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore.Relational
-(dotnet add) src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore.Relational
+dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL
+# Identity entegrasyonu için (IdentityDbContext)
+dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.AspNetCore.Identity.EntityFrameworkCore
 # Migrations aracı
 dotnet add src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj package Microsoft.EntityFrameworkCore.Design
 ```
@@ -139,6 +141,15 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
     public override Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
         var now = DateTimeOffset.UtcNow;
+        var currentTenantId = _tenant.TenantId;
+
+        // TenantId'si olmayan bir context ile tenant-scoped veri yazmaya çalışmayı engelle.
+        // Bu, sistem düzeyinde (tenant-agnostic) işlemlerin yanlışlıkla tenant verisine dokunmasını önler.
+        if (currentTenantId == Guid.Empty && ChangeTracker.Entries<ITenantScoped>().Any(e => e.State != EntityState.Unchanged))
+        {
+            throw new InvalidOperationException("A valid tenant context is required to save tenant-scoped entities.");
+        }
+
         foreach (var entry in ChangeTracker.Entries())
         {
             if (entry.Entity is AuditableEntity aud)
@@ -146,18 +157,39 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
                 if (entry.State == EntityState.Added) aud.CreatedUtc = now;
                 if (entry.State == EntityState.Modified) aud.UpdatedUtc = now;
             }
+
             if (entry.Entity is ITenantScoped scoped)
             {
-                if (entry.State == EntityState.Added)
+                switch (entry.State)
                 {
-                    // Insert’te aktif tenant’ı zorunlu kıl
-                    scoped.TenantId = _tenant.TenantId;
-                }
-                else
-                {
-                    // Update/Delete sırasında başka tenant’a erişimi engelle
-                    if (!Equals(scoped.TenantId, _tenant.TenantId))
-                        throw new InvalidOperationException("Cross-tenant access is not allowed.");
+                    case EntityState.Added:
+                        // Yeni kayıtlara mevcut tenantId'yi otomatik ata.
+                        scoped.TenantId = currentTenantId;
+                        break;
+
+                    case EntityState.Modified:
+                        // Orijinal TenantId'yi veritabanından geldiği haliyle kontrol et.
+                        var originalTenantId = entry.OriginalValues.GetValue<Guid>(nameof(ITenantScoped.TenantId));
+                        if (!Equals(originalTenantId, currentTenantId))
+                        {
+                            throw new InvalidOperationException($"Cross-tenant update attempt detected. Entity belongs to tenant {originalTenantId}.");
+                        }
+
+                        // TenantId alanının değiştirilmesini engelle. Bu, bir verinin başka bir tenanta taşınmasını önler.
+                        if (entry.Property(nameof(ITenantScoped.TenantId)).IsModified)
+                        {
+                            throw new InvalidOperationException("Changing the TenantId of an existing entity is not allowed.");
+                        }
+                        break;
+
+                    case EntityState.Deleted:
+                        // Silme işleminde de verinin orijinal sahibinin mevcut tenant olduğunu doğrula.
+                        var tenantIdForDelete = entry.OriginalValues.GetValue<Guid>(nameof(ITenantScoped.TenantId));
+                        if (!Equals(tenantIdForDelete, currentTenantId))
+                        {
+                            throw new InvalidOperationException($"Cross-tenant delete attempt detected. Entity belongs to tenant {tenantIdForDelete}.");
+                        }
+                        break;
                 }
             }
         }
@@ -518,4 +550,3 @@ SELECT create_hypertable('tenant_metrics', 'timestamp_utc', if_not_exists => TRU
 # 12) Sonraki Paket
 
 - **A2 – Audit Logging**: `audit.change_log` tablo haritalaması + `SaveChanges` interceptor (PII maskeleme) + sorgu indeksleri + arşivleme.
-
