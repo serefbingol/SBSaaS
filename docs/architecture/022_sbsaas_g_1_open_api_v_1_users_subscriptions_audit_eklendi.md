@@ -21,6 +21,7 @@ paths:
   /auth/login:
     post:
       summary: Login with username/password
+      operationId: login
       tags: [Auth]
       requestBody:
         required: true
@@ -30,10 +31,33 @@ paths:
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/AuthTokens' } } } }
         '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      operationId: refreshToken
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RefreshTokenRequest' }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/AuthTokens' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/logout:
+    post:
+      summary: Logout and invalidate refresh token
+      operationId: logout
+      tags: [Auth]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: No Content }
+        '401': { $ref: '#/components/responses/Unauthorized' }
 
   /me:
     get:
       summary: Returns current user profile
+      operationId: getMyProfile
       tags: [Auth]
       security: [{ bearerAuth: [] }]
       parameters: [ { $ref: '#/components/parameters/TenantHeader' } ]
@@ -44,6 +68,7 @@ paths:
   /tenants:
     get:
       summary: List tenants (admin)
+      operationId: listTenants
       tags: [Tenants]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -59,6 +84,7 @@ paths:
               schema: { $ref: '#/components/schemas/PagedTenantList' }
     post:
       summary: Create tenant
+      operationId: createTenant
       tags: [Tenants]
       security: [{ bearerAuth: [] }]
       requestBody:
@@ -67,10 +93,84 @@ paths:
       responses:
         '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
 
+  /tenants/{id}:
+    get:
+      summary: Get tenant by id
+      operationId: getTenantById
+      tags: [Tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      summary: Update tenant
+      operationId: updateTenant
+      tags: [Tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/TenantUpdate' } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
+
+  /tenants/{id}:
+    get:
+      summary: Get tenant by id
+      operationId: getTenantById
+      tags: [Tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      summary: Update tenant
+      operationId: updateTenant
+      tags: [Tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/TenantUpdate' } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
+    delete:
+      summary: Delete tenant
+      operationId: deleteTenant
+      tags: [Tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: No Content }
+        '404': { $ref: '#/components/responses/NotFound' }
+
   # ---------------- USERS ----------------
   /users:
     get:
       summary: List users in tenant
+      operationId: listUsers
       tags: [Users]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -83,6 +183,7 @@ paths:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/PagedUserList' } } } }
     post:
       summary: Create user in tenant
+      operationId: createUser
       tags: [Users]
       security: [{ bearerAuth: [] }]
       parameters: [ { $ref: '#/components/parameters/TenantHeader' } ]
@@ -95,6 +196,7 @@ paths:
   /users/{id}:
     get:
       summary: Get user by id
+      operationId: getUserById
       tags: [Users]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -102,12 +204,13 @@ paths:
         - name: id
           in: path
           required: true
-          schema: { type: string }
+          schema: { type: string, format: uuid }
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
         '404': { $ref: '#/components/responses/NotFound' }
     put:
       summary: Update user
+      operationId: updateUser
       tags: [Users]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -115,7 +218,7 @@ paths:
         - name: id
           in: path
           required: true
-          schema: { type: string }
+          schema: { type: string, format: uuid }
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/UserUpdate' } } }
@@ -124,6 +227,7 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
     delete:
       summary: Delete user
+      operationId: deleteUser
       tags: [Users]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -131,7 +235,7 @@ paths:
         - name: id
           in: path
           required: true
-          schema: { type: string }
+          schema: { type: string, format: uuid }
       responses:
         '204': { description: No Content }
         '404': { $ref: '#/components/responses/NotFound' }
@@ -139,6 +243,7 @@ paths:
   /users/{id}/roles:
     put:
       summary: Replace user roles
+      operationId: setUserRoles
       tags: [Users]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -146,7 +251,7 @@ paths:
         - name: id
           in: path
           required: true
-          schema: { type: string }
+          schema: { type: string, format: uuid }
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/RoleAssignment' } } }
@@ -157,6 +262,7 @@ paths:
   /plans:
     get:
       summary: List subscription plans
+      operationId: listPlans
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -168,6 +274,7 @@ paths:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/PagedPlanList' } } } }
     post:
       summary: Create subscription plan
+      operationId: createPlan
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       requestBody:
@@ -179,6 +286,7 @@ paths:
   /plans/{id}:
     get:
       summary: Get plan by id
+      operationId: getPlanById
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -191,6 +299,7 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
     put:
       summary: Update plan
+      operationId: updatePlan
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -205,6 +314,7 @@ paths:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/SubscriptionPlan' } } } }
     delete:
       summary: Delete plan
+      operationId: deletePlan
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -218,6 +328,7 @@ paths:
   /subscriptions:
     get:
       summary: List subscriptions for tenant
+      operationId: listSubscriptions
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -228,6 +339,7 @@ paths:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/PagedSubscriptionList' } } } }
     post:
       summary: Create subscription for tenant
+      operationId: createSubscription
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       parameters: [ { $ref: '#/components/parameters/TenantHeader' } ]
@@ -240,6 +352,7 @@ paths:
   /subscriptions/{id}:
     get:
       summary: Get subscription by id
+      operationId: getSubscriptionById
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -253,6 +366,7 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
     delete:
       summary: Cancel subscription
+      operationId: cancelSubscription
       tags: [Subscriptions]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -264,10 +378,44 @@ paths:
       responses:
         '204': { description: No Content }
 
+  # -------------- FILES --------------
+  /files/upload:
+    post:
+      summary: Upload a file
+      operationId: uploadFile
+      tags: [Files]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/TenantHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties: { file: { type: string, format: binary } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/FileObject' } } } }
+
+  /files/{objectName}:
+    delete:
+      summary: Delete a file
+      operationId: deleteFile
+      tags: [Files]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/TenantHeader'
+        - name: objectName
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204': { description: No Content }
   # -------------- AUDIT --------------
   /audit/change-log:
     get:
       summary: Query audit logs
+      operationId: queryAuditLogs
       tags: [Audit]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -298,6 +446,20 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    oauth2:
+      type: oauth2
+      description: 'Authorization Code (PKCE) flow for WebApp users.'
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.sbsaas.example.com/oauth2/authorize
+          tokenUrl: https://auth.sbsaas.example.com/oauth2/token
+          scopes:
+            openid: OpenID Connect scope
+            profile: Basic profile information
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
   parameters:
     TenantHeader:
       in: header
@@ -322,6 +484,19 @@ components:
       name: sort
       description: Comma-separated fields, prefix with '-' for desc. e.g. `-createdUtc,email`
       schema: { type: string }
+  headers:
+    XRateLimitLimit: { schema: { type: integer }, description: Limit }
+    XRateLimitRemaining: { schema: { type: integer }, description: Kalan }
+    XRateLimitReset: { schema: { type: integer }, description: Epoch seconds }
+    Deprecation:
+      description: 'RFC 8594. Kaynağın kullanımdan kaldırıldığını belirtir. Değer, kullanımdan kaldırılma tarihi olabilir.'
+      schema:
+        type: string
+    Sunset:
+      description: 'RFC 8594. Kaynağın tamamen kaldırılacağı tarih ve saat.'
+      schema:
+        type: string
+        format: date-time
   responses:
     Unauthorized:
       description: Unauthorized
@@ -343,7 +518,7 @@ components:
     User:
       type: object
       properties:
-        id: { type: string }
+        id: { type: string, format: uuid }
         email: { type: string, format: email }
         displayName: { type: string }
         tenantId: { type: string, format: uuid }
@@ -394,6 +569,16 @@ components:
         name: { type: string }
         culture: { type: string }
         timeZone: { type: string }
+    TenantUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        timeZone: { type: string }
+    TenantUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        timeZone: { type: string }
     PagedTenantList:
       type: object
       properties:
@@ -431,6 +616,16 @@ components:
         currency: { type: string }
         isActive: { type: boolean }
 
+    PagedPlanList:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/SubscriptionPlan' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+
     Subscription:
       type: object
       properties:
@@ -463,6 +658,29 @@ components:
         objectName: { type: string }
         bucket: { type: string }
 
+    # -------- AUDIT --------
+    AuditLog:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        tenantId: { type: string, format: uuid }
+        tableName: { type: string }
+        keyValues: { type: string, description: "JSON representation of the primary key(s)" }
+        oldValues: { type: string, description: "JSON representation of the old values", nullable: true }
+        newValues: { type: string, description: "JSON representation of the new values", nullable: true }
+        operation: { type: string, enum: [INSERT, UPDATE, DELETE] }
+        userId: { type: string, nullable: true }
+        utcDate: { type: string, format: date-time }
+    PagedAuditList:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/AuditLog' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+
     # -------- AUTH --------
     LoginRequest:
       type: object
@@ -479,10 +697,11 @@ components:
     UserProfile:
       type: object
       properties:
-        id: { type: string }
+        id: { type: string, format: uuid }
         email: { type: string }
         displayName: { type: string }
         roles: { type: array, items: { type: string } }
+        tenantId: { type: string, format: uuid }
 ```
 
 ---

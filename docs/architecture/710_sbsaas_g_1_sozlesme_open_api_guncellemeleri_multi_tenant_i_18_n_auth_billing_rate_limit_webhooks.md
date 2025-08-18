@@ -297,6 +297,15 @@ components:
     XRateLimitLimit: { schema: { type: integer }, description: Limit }
     XRateLimitRemaining: { schema: { type: integer }, description: Kalan }
     XRateLimitReset: { schema: { type: integer }, description: Epoch seconds }
+    Deprecation:
+      description: 'RFC 8594. Kaynağın kullanımdan kaldırıldığını belirtir. Değer, kullanımdan kaldırılma tarihi olabilir.'
+      schema:
+        type: string
+    Sunset:
+      description: 'RFC 8594. Kaynağın tamamen kaldırılacağı tarih ve saat.'
+      schema:
+        type: string
+        format: date-time
 ```
 Kullanım (örnek):
 ```yaml
@@ -384,4 +393,3 @@ paths:
 
 # 14) Sonraki Paket
 - **G2 – SDK/Client Kitleri**: .NET/TS client oluşturma (`openapi-generator`), örnekler ve quickstart; `X-Tenant-Id`/rate‑limit header’larını otomatik yöneten base client.
-

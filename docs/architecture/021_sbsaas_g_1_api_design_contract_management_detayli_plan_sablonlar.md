@@ -74,9 +74,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Deprecation:
-              schema: { type: string }
           content:
             application/json:
               schema: { $ref: '#/components/schemas/AuthTokens' }
@@ -169,6 +166,19 @@ components:
       schema:
         type: string
         format: uuid
+  headers:
+    XRateLimitLimit: { schema: { type: integer }, description: Limit }
+    XRateLimitRemaining: { schema: { type: integer }, description: Kalan }
+    XRateLimitReset: { schema: { type: integer }, description: Epoch seconds }
+    Deprecation:
+      description: 'RFC 8594. Kaynağın kullanımdan kaldırıldığını belirtir. Değer, kullanımdan kaldırılma tarihi olabilir.'
+      schema:
+        type: string
+    Sunset:
+      description: 'RFC 8594. Kaynağın tamamen kaldırılacağı tarih ve saat.'
+      schema:
+        type: string
+        format: date-time
   responses:
     Unauthorized:
       description: Unauthorized
@@ -305,4 +315,3 @@ jobs:
 ## 12) Sonraki Adımlar
 - **G1 genişletme**: Users, Subscriptions, Audit uçları ve örnekleri ekle.
 - **A1 başlat**: Şemaya göre DB tasarımı (entity eşleşmesi, status codes).
-
