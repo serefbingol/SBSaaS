@@ -91,7 +91,11 @@ paths:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/TenantCreate' } } }
       responses:
-        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tenant' }
 
   /tenants/{id}:
     get:
@@ -122,36 +126,7 @@ paths:
         content: { application/json: { schema: { $ref: '#/components/schemas/TenantUpdate' } } }
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
-
-  /tenants/{id}:
-    get:
-      summary: Get tenant by id
-      operationId: getTenantById
-      tags: [Tenants]
-      security: [{ bearerAuth: [] }]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string, format: uuid }
-      responses:
-        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
         '404': { $ref: '#/components/responses/NotFound' }
-    put:
-      summary: Update tenant
-      operationId: updateTenant
-      tags: [Tenants]
-      security: [{ bearerAuth: [] }]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string, format: uuid }
-      requestBody:
-        required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/TenantUpdate' } } }
-      responses:
-        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
     delete:
       summary: Delete tenant
       operationId: deleteTenant
@@ -574,11 +549,6 @@ components:
       properties:
         name: { type: string }
         timeZone: { type: string }
-    TenantUpdate:
-      type: object
-      properties:
-        name: { type: string }
-        timeZone: { type: string }
     PagedTenantList:
       type: object
       properties:
@@ -688,6 +658,11 @@ components:
       properties:
         email: { type: string, format: email }
         password: { type: string, format: password }
+    RefreshTokenRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken: { type: string }
     AuthTokens:
       type: object
       properties:
@@ -723,24 +698,33 @@ components:
 # 3) Prism Mock – Örnek Dinamik Yanıtlar
 
 `contracts/prism.yml` içinde `dynamic: true` açık olduğunda Prism şemaya göre örnekler üretir. Özel örnekler için `x-examples` ekleyebilirsin:
+OpenAPI 3.1 standardına göre, örnekler `responses` -> `200` -> `content` -> `application/json` altına `examples` anahtar kelimesi ile eklenmelidir. Bu, hem dokümantasyon araçları hem de Prism tarafından doğru yorumlanmasını sağlar.
 
 ```yaml
 paths:
   /users:
     get:
-      x-examples:
-        success:
-          value:
-            items:
-              - id: "u_1"
-                email: "admin@example.com"
-                displayName: "Admin"
-                tenantId: "11111111-1111-1111-1111-111111111111"
-                roles: ["Admin"]
-                createdUtc: "2025-01-01T00:00:00Z"
-            page: 1
-            pageSize: 20
-            total: 1
+      # ... summary, tags, parameters etc.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PagedUserList' }
+              examples:
+                success:
+                  summary: "Başarılı bir kullanıcı listesi yanıtı"
+                  value:
+                    items:
+                      - id: "d290f1ee-6c54-4b01-90e6-d701748f0851" # UUID formatında
+                        email: "admin@example.com"
+                        displayName: "Admin"
+                        tenantId: "11111111-1111-1111-1111-111111111111"
+                        roles: ["Admin"]
+                        createdUtc: "2025-01-01T00:00:00Z"
+                    page: 1
+                    pageSize: 20
+                    total: 1
 ```
 
 Çalıştırma:
@@ -756,26 +740,32 @@ curl -H 'Authorization: Bearer mock' -H 'X-Tenant-Id: 11111111-1111-1111-1111-11
 # 4) Postman Koleksiyonu Üretimi
 
 ```bash
-npx openapi-to-postmanv2 -s contracts/openapi.yaml -o contracts/postman/SBSaaS.postman_collection.json -p
+npx openapi-to-postmanv2 -s contracts/openapi.yaml -o contracts/postman/SBSaaS.postman_collection.json -p -O folderStrategy=Tags
 ```
 
 ---
 
 # 5) Notlar
 
-- `X-Tenant-Id` tüm tenant’a bağlı uçlarda zorunlu.
-- Paging yanıtları: `{ items: T[], page, pageSize, total }`.
-- Sıralama: `?sort=-createdUtc,email` biçiminde çoklu alan desteği.
-- Arama: `?q=` basit arama parametresi (geliştirilebilir filtreleme için `?filter=` şeması ileride eklenebilir).
-- Audit sorguları performans için tarih + tenant indeksleri ile desteklenecek (A2 kapsamı).
+- **Tenant İzolasyonu**: `X-Tenant-Id` başlığı, `/users`, `/subscriptions` gibi tenant'a özgü tüm kaynaklar için zorunludur. `/tenants` ve `/plans` gibi yönetici seviyesi veya `/auth` gibi global uçlar bu başlığı gerektirmez.
+- **Sayfalama (Pagination)**: Listeleme yanıtları standart bir `PagedList` yapısı kullanır: `{ items: T[], page, pageSize, total }`.
+- **Sıralama (Sorting)**: `?sort=-createdUtc,email` gibi virgülle ayrılmış ve `-` ön ekiyle azalan sıralamayı destekleyen çoklu alan sıralaması mevcuttur.
+- **Arama (Searching)**: `?q=` parametresi ile basit metin araması sağlanmıştır. Gelecekte daha karmaşık filtreleme için `?filter=` standardı (örn: OData) eklenebilir.
+- **Operasyon Kimlikleri**: Tüm operasyonlar için `operationId` alanı, SDK üretimi ve istemci entegrasyonunu kolaylaştırmak amacıyla `verbResource` (örn: `listUsers`, `createTenant`) formatında standartlaştırılmıştır.
+- **Hata Yönetimi**: Hata yanıtları, RFC 7807 ile uyumlu `ProblemDetails` şemasını kullanarak standart bir formatta sunulur. Bu, istemcilerin hataları tutarlı bir şekilde işlemesini sağlar.
+- **Veritabanı Performansı**: Audit sorguları, A2 iş paketi kapsamında `(tenant_id, utc_date)` gibi bileşik indekslerle desteklenerek yüksek performansta çalışacak şekilde planlanmıştır.
 
 ---
 
 # 6) Kabul Kriterleri (G1 güncellemesi)
 
-- Users, Subscriptions(Plans), Audit yolları ve **DTO şemaları** eklendi.
-- Prism ile `/users`, `/plans`, `/subscriptions`, `/audit/change-log` mock yanıtları alınabiliyor.
-- Postman koleksiyonu güncelleniyor ve çalışır.
+- **Kapsam**: `Users`, `Subscriptions` (Planlar dahil) ve `Audit` yolları, ilgili DTO'lar (`User`, `SubscriptionPlan`, `AuditLog` vb.) ve operasyonlar (`listUsers`, `createPlan` vb.) şemaya eksiksiz eklenmiştir.
+- **Standartlar**:
+  - Tüm yeni operasyonlar için `operationId` standardı (`verbResource` formatında) uygulanmıştır.
+  - Sayfalama (`PagedList`), arama (`q`) ve sıralama (`sort`) için ortak parametreler ve şemalar tutarlı bir şekilde kullanılmıştır.
+- **Mock Testi**: Prism ile `/users`, `/plans`, `/subscriptions` ve `/audit/change-log` uçlarından başarılı mock yanıtları alınabilmektedir.
+- **Koleksiyon**: Postman koleksiyonu, OpenAPI şemasından `folderStrategy=Tags` kullanılarak yeniden üretilmiş ve istekler etiketlere göre klasörlenmiştir.
+- **CI Doğrulaması**: Güncellenen `openapi.yaml` dosyası, CI pipeline'daki lint (Spectral) ve mock smoke test adımlarını başarıyla geçmektedir.
 
 ```
 ```

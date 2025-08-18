@@ -24,6 +24,28 @@ paths:
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/AuthTokens' } } } }
         '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      operationId: refreshToken
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RefreshTokenRequest' }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/AuthTokens' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/logout:
+    post:
+      summary: Logout and invalidate refresh token
+      operationId: logout
+      tags: [Auth]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: No Content }
+        '401': { $ref: '#/components/responses/Unauthorized' }
 
   /me:
     get:
@@ -63,6 +85,54 @@ paths:
         content: { application/json: { schema: { $ref: '#/components/schemas/TenantCreate' } } }
       responses:
         '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+
+  /tenants/{id}:
+    get:
+      summary: Get tenant by id
+      operationId: getTenantById
+      tags: [Tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      summary: Update tenant
+      operationId: updateTenant
+      tags: [Tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/TenantUpdate' } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Tenant' } } } }
+    delete:
+      summary: Delete tenant
+      operationId: deleteTenant
+      tags: [Tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: No Content }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   # ---------------- USERS ----------------
   /users:
@@ -317,6 +387,20 @@ paths:
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/FileObject' } } } }
 
+  /files/{objectName}:
+    delete:
+      summary: Delete a file
+      operationId: deleteFile
+      tags: [Files]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/TenantHeader'
+        - name: objectName
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204': { description: No Content }
   # -------------- AUDIT --------------
   /audit/change-log:
     get:
@@ -483,6 +567,11 @@ components:
         name: { type: string }
         culture: { type: string }
         timeZone: { type: string }
+    TenantUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        timeZone: { type: string }
     PagedTenantList:
       type: object
       properties:
@@ -592,6 +681,11 @@ components:
       properties:
         email: { type: string, format: email }
         password: { type: string, format: password }
+    RefreshTokenRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken: { type: string }
     AuthTokens:
       type: object
       properties:
