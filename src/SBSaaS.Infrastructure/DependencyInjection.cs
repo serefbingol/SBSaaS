@@ -27,6 +27,8 @@ public static class DependencyInjection
         services.AddDbContext<SbsDbContext>((sp, opt) =>
         {
             opt.UseNpgsql(config.GetConnectionString("Postgres"));
+            // Üretimde hassas verilerin loglanmasını engellemek önemlidir.
+            opt.EnableSensitiveDataLogging(false);
             // Audit interceptor'ını DbContext'e ekle
             opt.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
         });
@@ -36,13 +38,16 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<SbsDbContext>()
             .AddDefaultTokenProviders();
 
-        // B1 - Dosya Depolama (MinIO)
+        // B1 & A5 - Dosya Depolama (MinIO)
         services.AddSingleton(_ => new MinioClient()
             .WithEndpoint(config["Minio:Endpoint"]!)
             .WithCredentials(config["Minio:AccessKey"]!, config["Minio:SecretKey"]!)
-            .WithSSL(false) // Lokal geliştirme için SSL genellikle kapalıdır
+            .WithSSL(bool.TryParse(config["Minio:UseSSL"], out var ssl) && ssl)
             .Build());
         services.AddScoped<IFileStorage, MinioFileStorage>();
+        // A5 - Presigned URL ve Politika servisleri
+        services.AddScoped<IObjectSigner, MinioObjectSigner>();
+        services.AddScoped<IUploadPolicy, UploadPolicy>();
 
         return services;
     }

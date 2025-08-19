@@ -60,7 +60,24 @@ public class AdminApiClient
     public Task<ReconcileReportDto?> ReconcileAsync(DateOnly date) => _http.GetFromJsonAsync<ReconcileReportDto>($"api/v1/billing/admin/reconcile?date={date:yyyy-MM-dd}");
 
     // Audit
-    public Task<Paged<AuditRow>?> GetAuditAsync(int page) => _http.GetFromJsonAsync<Paged<AuditRow>>($"api/v1/audit/change-log?page={page}");
+    public Task<Paged<AuditLogDto>?> GetAuditAsync(
+        int page = 1, int pageSize = 50,
+        DateTime? from = null, DateTime? to = null,
+        string? table = null, string? operation = null, string? userId = null)
+    {
+        var query = new Dictionary<string, string?>
+        {
+            ["page"] = page.ToString(),
+            ["pageSize"] = pageSize.ToString(),
+            ["from"] = from?.ToString("o"), // ISO 8601 formatı
+            ["to"] = to?.ToString("o"),
+            ["table"] = table,
+            ["operation"] = operation,
+            ["userId"] = userId
+        };
+        var queryString = string.Join("&", query.Where(kvp => !string.IsNullOrEmpty(kvp.Value)).Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value!)}"));
+        return _http.GetFromJsonAsync<Paged<AuditLogDto>>($"api/v1/audit/change-log?{queryString}");
+    }
 }
 
 public record PlanUpsertDto(string Code, string Name, string? Description, decimal Price, string Currency, string BillingCycle);
@@ -68,8 +85,7 @@ public record FeatureUpsertDto(Guid? Id, string Key, string? Value);
 public record InvoiceCreateDto(Guid SubscriptionId, DateOnly IssueDate, DateOnly DueDate, decimal Amount, string Currency, string? Note);
 public record RefundRequestDto(decimal Amount, string Reason);
 public record ReconcileReportDto(DateOnly Date, decimal ProviderTotal, decimal InternalTotal, int MismatchCount, List<string> Notes);
-public record AuditRow(DateTimeOffset At, string Actor, string Table, string Action, string? Keys, string? Changes);
-public record Paged<T>(int Page, int PageSize, int Total, List<T> Items);
+// AuditRow, API
 ```
 **Kayıt**: `Program.cs` → `builder.Services.AddScoped<AdminApiClient>();`
 
@@ -229,7 +245,7 @@ public class AdminAuditController : Controller
 {
     private readonly AdminApiClient _api; public AdminAuditController(AdminApiClient api) => _api = api;
     public async Task<IActionResult> Index(int page = 1)
-        => View(await _api.GetAuditAsync(page) ?? new Paged<AuditRow>(page, 50, 0, new()));
+        => View(await _api.GetAuditAsync(page) ?? new Paged<AuditRow>(new List<AuditRow>(), page, 50, 0));
 }
 ```
 **View**: Tablo sütunları – `At`, `Actor`, `Table`, `Action`, `Keys`, `Changes` (PII maskeleme uygulanmış hali).
@@ -262,4 +278,3 @@ public class AdminAuditController : Controller
 
 # 12) Sonraki Paket
 - **F1 – Feature Flag & Limit Enforcement**: Özellik anahtarlarını (E1) UI ve API katmanında enforcement, kota/limit kontrolleri, overage fiyatlandırma opsiyonları.
-

@@ -13,7 +13,7 @@ namespace SBSaaS.Infrastructure.Audit;
 public class AuditSaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly ITenantContext _tenant;
-    private readonly IHttpContextAccessor _http;
+    private readonly IUserContext _userContext;
 
     // İsteğe göre PII sözlüğü (tablo.ad -> maske). Attribute yoksa fallback.
     private static readonly Dictionary<string, string> PiiMask = new()
@@ -22,17 +22,25 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         ["customers.email"] = "***"
     };
 
-    public AuditSaveChangesInterceptor(ITenantContext tenant, IHttpContextAccessor http)
-    { _tenant = tenant; _http = http; }
+    public AuditSaveChangesInterceptor(ITenantContext tenant, IUserContext userContext)
+    { _tenant = tenant; _userContext = userContext; }
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData, InterceptionResult<int> result, CancellationToken ct = default)
     {
         var ctx = eventData.Context; if (ctx is null) return base.SavingChangesAsync(eventData, result, ct);
+        var userId = _userContext.UserId;
 
         var logs = new List<ChangeLog>();
         foreach (var entry in ctx.ChangeTracker.Entries().Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
+            // Denetim logu tablosunun kendisini denetlemeyi atla. Bu, hem gereksizdir hem de
+            // potansiyel döngüleri önler.
+            if (entry.Entity is ChangeLog)
+            {
+                continue;
+            }
+
             var table = entry.Metadata.GetTableName() ?? entry.Entity.GetType().Name;
             var keyJson = JsonSerializer.Serialize(GetKeys(entry));
             var oldJson = entry.State == EntityState.Added ? null : JsonSerializer.Serialize(MaskValues(entry.OriginalValues, entry));
@@ -46,7 +54,7 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
                 OldValues = oldJson,
                 NewValues = newJson,
                 Operation = entry.State.ToString().ToUpperInvariant(),
-                UserId = _http.HttpContext?.User?.Identity?.Name,
+                UserId = userId,
                 UtcDate = DateTimeOffset.UtcNow // Use DateTimeOffset for consistency
             });
         }
@@ -64,20 +72,33 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
     private static IDictionary<string, object?> MaskValues(PropertyValues values, EntityEntry entry)
     {
         var dict = values.Properties.ToDictionary(p => p.Name, p => values[p]);
-        var table = entry.Metadata.GetTableName()?.ToLowerInvariant();
+        var tableName = entry.Metadata.GetTableName()?.ToLowerInvariant();
 
         foreach (var p in entry.Metadata.GetProperties())
         {
             var clrProp = entry.Entity.GetType().GetProperty(p.Name, BindingFlags.Public | BindingFlags.Instance);
-            var hasPii = clrProp?.GetCustomAttribute<PiiAttribute>() != null;
-            if (hasPii)
+
+            // 1. PiiAttribute kontrolü (en yüksek öncelik). Bu, tablo adından bağımsız çalışır.
+            if (clrProp?.GetCustomAttribute<PiiAttribute>() is { } piiAttr)
             {
-                dict[p.Name] = "***"; // attribute maskesi kullanılabilir
-                continue;
+                // Attribute'tan özel bir maske değeri geliyorsa onu kullan, yoksa varsayılanı kullan.
+                dict[p.Name] = piiAttr.Mask ?? "***";
+                continue; // Bu özellik maskelendi, diğer kontrole gerek yok.
             }
-            var key = $"{table}.{p.GetColumnName(StoreObjectIdentifier.Table(table!, null))}".ToLowerInvariant();
+
+            // 2. Sözlük tabanlı kontrol (fallback).
+            // Tablo adı veya sütun adı alınamazsa bu kontrol güvenli bir şekilde atlanır.
+            if (tableName is null) continue;
+
+            var storeObject = StoreObjectIdentifier.Table(tableName, null);
+            var columnName = p.GetColumnName(storeObject)?.ToLowerInvariant();
+            if (columnName is null) continue;
+
+            var key = $"{tableName}.{columnName}";
             if (PiiMask.TryGetValue(key, out var mask))
+            {
                 dict[p.Name] = mask;
+            }
         }
         return dict;
     }

@@ -105,6 +105,8 @@ CREATE INDEX IF NOT EXISTS ix_audit_table_date  ON audit.change_log (table_name,
 # 4) Interceptor – SaveChanges yakalama + PII maskeleme
 **`src/SBSaaS.Infrastructure/Audit/AuditSaveChangesInterceptor.cs`**
 ```csharp
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -134,15 +136,22 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         DbContextEventData eventData, InterceptionResult<int> result, CancellationToken ct = default)
     {
         var ctx = eventData.Context; if (ctx is null) return base.SavingChangesAsync(eventData, result, ct);
+        var user = _http.HttpContext?.User;
+
+        // Denetim için kullanıcı kimliğini al. Öncelik 'sub'/'nameidentifier' claim'i, fallback 'name'.
+        var userId = user?.Identity?.IsAuthenticated == true
+            ? user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? user.Identity?.Name
+            : null;
 
         var logs = new List<ChangeLog>();
-        foreach (var entry in ctx.ChangeTracker.Entries().Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
+        // ChangeLog entity'sinin kendisini loglamayı atla (sonsuz döngü önlemi).
+        foreach (var entry in ctx.ChangeTracker.Entries().Where(e => e.Entity is not ChangeLog && e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
             var table = entry.Metadata.GetTableName() ?? entry.Entity.GetType().Name;
             var keyJson = JsonSerializer.Serialize(GetKeys(entry));
             var oldJson = entry.State == EntityState.Added ? null : JsonSerializer.Serialize(MaskValues(entry.OriginalValues, entry));
             var newJson = entry.State == EntityState.Deleted ? null : JsonSerializer.Serialize(MaskValues(entry.CurrentValues, entry));
-
+            
             logs.Add(new ChangeLog
             {
                 TenantId = _tenant.TenantId,
@@ -151,8 +160,8 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
                 OldValues = oldJson,
                 NewValues = newJson,
                 Operation = entry.State.ToString().ToUpperInvariant(),
-                UserId = _http.HttpContext?.User?.Identity?.Name,
-                UtcDate = DateTime.UtcNow
+                UserId = userId,
+                UtcDate = DateTimeOffset.UtcNow
             });
         }
 
@@ -274,13 +283,31 @@ SELECT add_retention_policy('audit.change_log', INTERVAL '90 days');
 
 ---
 
-# 7) Arşiv & Temizlik (pgAgent örneği)
-**90 gün üzerini sil (veya arşivle)**
+# 7) Arşiv & Temizlik Stratejileri
+
+Denetim kayıtları zamanla çok büyük boyutlara ulaşabilir. Bu nedenle düzenli bir arşivleme ve temizlik stratejisi kritik öneme sahiptir. İşte birkaç yaklaşım:
+
+## Yaklaşım 1: Partisyon Düşürme (Önerilen)
+
+Eğer 6. bölümde bahsedildiği gibi **TimescaleDB** veya **native PostgreSQL partisyonlama** kullanıyorsanız, en verimli yöntem eski partisyonları (chunk'ları) doğrudan düşürmektir. Bu işlem, satır satır silme (DELETE) yerine dosya sisteminden blokları kaldırdığı için çok daha hızlıdır ve veritabanında şişkinliğe (bloat) yol açmaz.
+
+**TimescaleDB ile:**
+`SELECT add_retention_policy('audit.change_log', INTERVAL '90 days');` komutu bu işi otomatik olarak yapar.
+
+**Native Partitioning ile:**
+`pgAgent` veya benzeri bir zamanlayıcı ile eski partisyonları `DETACH` edip ardından `DROP TABLE` komutuyla silebilirsiniz.
+
+## Yaklaşım 2: Basit Silme (Küçük Ölçekli Sistemler İçin)
+
+Eğer tablo partisyonlanmamışsa, `pgAgent` gibi bir zamanlayıcı ile periyodik olarak eski kayıtları silebilirsiniz. Bu yöntem, büyük tablolarda yavaş olabilir ve I/O yükü oluşturabilir.
+
+**90 gün üzerini sil:**
 ```sql
+-- DİKKAT: Bu sorgu büyük tablolarda uzun sürebilir ve bloat'a neden olabilir.
 DELETE FROM audit.change_log WHERE utc_date < (now() at time zone 'utc' - interval '90 days');
 ```
 
-> Arşivlemek isterseniz önce `audit_archive.change_log` tablosuna INSERT SELECT yapıp ardından ana tablodan silin.
+> **Arşivleme**: Silmeden önce verileri başka bir `audit_archive.change_log` tablosuna veya S3 gibi bir soğuk depolama alanına taşımak isterseniz, `DELETE` işleminden önce bir `INSERT INTO ... SELECT ...` adımı ekleyebilirsiniz.
 
 ---
 
@@ -300,6 +327,7 @@ FROM audit.change_log
 WHERE table_name = 'projects'
   AND key_values @> '{"Id":"9a2b..."}'::jsonb
 ORDER BY utc_date DESC;
+-- Not: Bu sorgunun performanslı çalışması için `key_values` sütununda bir GIN indeksi olması gerekir.
 ```
 
 ---

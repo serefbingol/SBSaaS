@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SBSaaS.API")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute(" ")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f486d7698c609446603bae7cc2948c252e03fa4f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd5d0e0f35b13b306eb0c1b6ad34b3370798e844")]
 [assembly: System.Reflection.AssemblyProductAttribute("SBSaaS.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SBSaaS.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
