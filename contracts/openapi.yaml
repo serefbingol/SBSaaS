@@ -701,3 +701,20 @@ components:
         displayName: { type: string }
         roles: { type: array, items: { type: string } }
         tenantId: { type: string, format: uuid }
+    InviteRequest:
+      type: object
+      required: [tenantId, email, role]
+      properties:
+        tenantId: { type: string, format: uuid }
+        email: { type: string, format: email }
+        role: { type: string }
+    InviteResponse:
+      type: object
+      properties:
+        token: { type: string }
+    AcceptInviteRequest:
+      type: object
+      required: [token, password]
+      properties:
+        token: { type: string }
+        password: { type: string, format: password }

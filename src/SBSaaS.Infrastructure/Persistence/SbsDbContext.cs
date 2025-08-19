@@ -5,8 +5,10 @@ using SBSaaS.Application.Interfaces;
 using SBSaaS.Domain.Common;
 using SBSaaS.Domain.Entities.Billing;
 using SBSaaS.Domain.Entities.Projects;
+using SBSaaS.Domain.Entities.Auth;
+using SBSaaS.Domain.Entities.Invitations;
 using SBSaaS.Infrastructure.Audit;
-using SBSaaS.Infrastructure.Identity;
+using SBSaaS.Infrastructure.Localization;
 
 namespace SBSaaS.Infrastructure.Persistence;
 
@@ -22,6 +24,9 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
     public DbSet<Subscription> Subscriptions => Set<Subscription>();
     public DbSet<ChangeLog> ChangeLogs => Set<ChangeLog>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Invitation> Invitations => Set<Invitation>();
+    public DbSet<Translation> Translations => Set<Translation>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -61,6 +66,22 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
             e.Property(x => x.Code).HasMaxLength(64).IsRequired();
             e.Property(x => x.Name).HasMaxLength(200).IsRequired();
             e.HasIndex(x => new { x.TenantId, x.Code }).IsUnique();
+        });
+
+        b.Entity<Invitation>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Email).HasMaxLength(256).IsRequired();
+            e.Property(x => x.Token).HasMaxLength(128).IsRequired();
+            e.HasIndex(x => new { x.TenantId, x.Email }).IsUnique(false);
+            e.HasIndex(x => x.Token).IsUnique();
+        });
+
+        b.Entity<Translation>(b =>
+        {
+            b.ToTable("i18n_translations");
+            b.HasKey(x => x.Id);
+            b.HasIndex(x => new { x.Key, x.Culture }).IsUnique();
         });
         
         // Global query filter şablonu – ITenantScoped olan tüm entity’lere uygula

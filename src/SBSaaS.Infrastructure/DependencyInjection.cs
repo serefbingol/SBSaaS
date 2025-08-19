@@ -7,7 +7,7 @@ using Minio;
 using SBSaaS.Application.Interfaces;
 using SBSaaS.Domain.Entities;
 using SBSaaS.Infrastructure.Audit;
-using SBSaaS.Infrastructure.Identity;
+
 using SBSaaS.Infrastructure.Persistence;
 using SBSaaS.Infrastructure.Storage;
 
@@ -34,7 +34,16 @@ public static class DependencyInjection
         });
 
         // A3 - Identity
-        services.AddIdentity<ApplicationUser, IdentityRole>(o => { o.User.RequireUniqueEmail = true; })
+        services.AddIdentity<ApplicationUser, IdentityRole>(o =>
+        {
+            o.Password.RequiredLength = 8;
+            o.Password.RequireNonAlphanumeric = false;
+            o.Password.RequireUppercase = true;
+            o.Lockout.MaxFailedAccessAttempts = 5;
+            o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+            o.User.RequireUniqueEmail = true;
+            o.SignIn.RequireConfirmedEmail = false; // üretimde true önerilir
+        })
             .AddEntityFrameworkStores<SbsDbContext>()
             .AddDefaultTokenProviders();
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace SBSaaS.Infrastructure.Identity;
+namespace SBSaaS.Domain.Entities;
 
 public class ApplicationUser : IdentityUser
 {
