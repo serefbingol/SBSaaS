@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Add services to the container.
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddHttpContextAccessor(); // Required for HeaderTenantContext
 
 // Tenant Context – basit header temelli örnek (X-Tenant-Id)
 builder.Services.AddScoped<ITenantContext, HeaderTenantContext>();

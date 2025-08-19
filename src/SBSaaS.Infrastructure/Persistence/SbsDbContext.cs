@@ -6,6 +6,7 @@ using SBSaaS.Domain.Common;
 using SBSaaS.Domain.Entities.Billing;
 using SBSaaS.Domain.Entities.Projects;
 using SBSaaS.Infrastructure.Audit;
+using SBSaaS.Infrastructure.Identity;
 
 namespace SBSaaS.Infrastructure.Persistence;
 
@@ -42,10 +43,16 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
             e.HasIndex(u => new { u.TenantId, u.Email });
         });
 
-        b.Entity<ChangeLog>(e =>
+        b.Entity<ChangeLog>(e => // A2 - Audit Logging
         {
             e.ToTable("change_log", schema: "audit");
             e.HasKey(x => x.Id);
+
+            e.Property(x => x.TableName).HasMaxLength(128);
+            e.Property(x => x.Operation).HasMaxLength(16);
+            e.HasIndex(x => new { x.TenantId, x.UtcDate });
+            e.HasIndex(x => new { x.TableName, x.UtcDate });
+            e.HasIndex(x => x.Operation);
         });
 
         b.Entity<Project>(e =>

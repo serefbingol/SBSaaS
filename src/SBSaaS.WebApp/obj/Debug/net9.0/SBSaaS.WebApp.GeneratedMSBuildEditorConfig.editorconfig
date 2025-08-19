@@ -1,21 +1,17 @@
 is_global = true
-build_property.EnableAotAnalyzer = 
-build_property.EnableSingleFileAnalyzer = 
-build_property.EnableTrimAnalyzer = false
-build_property.IncludeAllContentForSelfExtract = 
 build_property.TargetFramework = net9.0
 build_property.TargetPlatformMinVersion = 
-build_property.UsingMicrosoftNETSdkWeb = 
+build_property.UsingMicrosoftNETSdkWeb = true
 build_property.ProjectTypeGuids = 
-build_property.InvariantGlobalization = false
+build_property.InvariantGlobalization = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
-build_property._SupportedPlatformList = browser
+build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = SBSaaS.WebApp
 build_property.RootNamespace = SBSaaS.WebApp
 build_property.ProjectDir = /home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/
 build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
@@ -51,3 +47,7 @@ build_metadata.AdditionalFiles.CssScope = b-h9zalzejr4
 [/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0L05hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-puf97ccqad
+
+[/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/Pages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

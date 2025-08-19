@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("a1b2c3d4-e5f6-7890-1234-567890abcdef")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("SBSaaS.WebApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+36907376ff4e037509b453d183f9a799513bfd0c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f486d7698c609446603bae7cc2948c252e03fa4f")]
 [assembly: System.Reflection.AssemblyProductAttribute("SBSaaS.WebApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SBSaaS.WebApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

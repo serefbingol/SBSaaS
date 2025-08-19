@@ -63,7 +63,7 @@ public class ChangeLog
     public string? NewValues { get; set; }              // JSON
     public string Operation { get; set; } = default!;   // INSERT/UPDATE/DELETE
     public string? UserId { get; set; }
-    public DateTime UtcDate { get; set; }
+    public DateTimeOffset UtcDate { get; set; }
 }
 ```
 
@@ -78,6 +78,7 @@ builder.Entity<SBSaaS.Infrastructure.Audit.ChangeLog>(b =>
     b.Property(x => x.Operation).HasMaxLength(16);
     b.HasIndex(x => new { x.TenantId, x.UtcDate });
     b.HasIndex(x => new { x.TableName, x.UtcDate });
+    b.HasIndex(x => x.Operation); // DoD uyumu ve sorgu performansı için eklendi.
 });
 ```
 
@@ -318,4 +319,3 @@ ORDER BY utc_date DESC;
 
 # 11) Sonraki Paket
 - **A3 – Identity & Authorization**: JWT, dış sağlayıcılar (Google/Microsoft), tenant-bound kullanıcı/rol/claim yönetimi, invitation flow, rate limit.
-

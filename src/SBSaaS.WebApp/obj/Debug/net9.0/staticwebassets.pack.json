@@ -1,12 +1,8 @@
 {
   "Files": [
     {
-      "Id": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/blazor.webassembly.js",
-      "PackagePath": "staticwebassets/_framework/blazor.webassembly.js"
-    },
-    {
-      "Id": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/scopedcss/bundle/SBSaaS.WebApp.styles.css",
-      "PackagePath": "staticwebassets/SBSaaS.WebApp.styles.css"
+      "Id": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/scopedcss/projectbundle/SBSaaS.WebApp.bundle.scp.css",
+      "PackagePath": "staticwebassets/SBSaaS.WebApp.oadxd44dgi.bundle.scp.css"
     },
     {
       "Id": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/wwwroot/css/app.css",

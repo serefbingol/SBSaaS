@@ -1,11 +1,29 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using SBSaaS.WebApp;
+var builder = WebApplication.CreateBuilder(args);
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+// Servisleri container'a ekleyin.
+// Mimari dokümanlarınızda (C1, C2, D2 vb.) belirtilen servisleri buraya ekleyeceksiniz.
+// Örnek: builder.Services.AddLocalization(), builder.Services.AddAuthentication(), builder.Host.UseSerilog()
+builder.Services.AddRazorPages();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+var app = builder.Build();
 
-await builder.Build().RunAsync();
+// HTTP request pipeline'ını yapılandırın.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+// Mimari dokümanlarınızda belirtilen middleware'leri buraya ekleyeceksiniz.
+// Örnek: app.UseAuthentication(), app.UseAuthorization(), app.UseRequestLocalization()
+app.UseAuthorization();
+
+app.MapRazorPages();
+
+app.Run();

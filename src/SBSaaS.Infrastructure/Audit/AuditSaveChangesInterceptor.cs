@@ -2,67 +2,83 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Reflection;
 using System.Text.Json;
 using SBSaaS.Application.Interfaces;
+using SBSaaS.Domain.Common.Security;
 
 namespace SBSaaS.Infrastructure.Audit;
 
 public class AuditSaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly ITenantContext _tenant;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _http;
 
-    public AuditSaveChangesInterceptor(ITenantContext tenant, IHttpContextAccessor httpContextAccessor)
+    // İsteğe göre PII sözlüğü (tablo.ad -> maske). Attribute yoksa fallback.
+    private static readonly Dictionary<string, string> PiiMask = new()
     {
-        _tenant = tenant;
-        _httpContextAccessor = httpContextAccessor;
-    }
+        ["aspnetusers.email"] = "***",
+        ["customers.email"] = "***"
+    };
 
-    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken ct = default)
+    public AuditSaveChangesInterceptor(ITenantContext tenant, IHttpContextAccessor http)
+    { _tenant = tenant; _http = http; }
+
+    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        DbContextEventData eventData, InterceptionResult<int> result, CancellationToken ct = default)
     {
-        var ctx = eventData.Context;
-        if (ctx == null) return base.SavingChangesAsync(eventData, result, ct);
+        var ctx = eventData.Context; if (ctx is null) return base.SavingChangesAsync(eventData, result, ct);
 
-        var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
         var logs = new List<ChangeLog>();
-
-        // ChangeLog'un kendisini loglamayı engellemek için filtrele
-        var entriesToAudit = ctx.ChangeTracker.Entries()
-            .Where(e => e.Entity is not ChangeLog && e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted);
-
-        foreach (var entry in entriesToAudit)
+        foreach (var entry in ctx.ChangeTracker.Entries().Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
             var table = entry.Metadata.GetTableName() ?? entry.Entity.GetType().Name;
+            var keyJson = JsonSerializer.Serialize(GetKeys(entry));
+            var oldJson = entry.State == EntityState.Added ? null : JsonSerializer.Serialize(MaskValues(entry.OriginalValues, entry));
+            var newJson = entry.State == EntityState.Deleted ? null : JsonSerializer.Serialize(MaskValues(entry.CurrentValues, entry));
+
             logs.Add(new ChangeLog
             {
                 TenantId = _tenant.TenantId,
                 TableName = table!,
-                KeyValues = JsonSerializer.Serialize(GetKeys(entry)),
-                OldValues = entry.State is EntityState.Modified or EntityState.Deleted ? JsonSerializer.Serialize(GetOriginalValues(entry)) : null,
-                NewValues = entry.State is EntityState.Added or EntityState.Modified ? JsonSerializer.Serialize(GetCurrentValues(entry)) : null,
+                KeyValues = keyJson,
+                OldValues = oldJson,
+                NewValues = newJson,
                 Operation = entry.State.ToString().ToUpperInvariant(),
-                UtcDate = DateTime.UtcNow,
-                UserId = userId
+                UserId = _http.HttpContext?.User?.Identity?.Name,
+                UtcDate = DateTimeOffset.UtcNow // Use DateTimeOffset for consistency
             });
         }
 
-        if (logs.Any())
-        {
+        if (logs.Count > 0)
             ctx.Set<ChangeLog>().AddRange(logs);
-        }
 
         return base.SavingChangesAsync(eventData, result, ct);
     }
 
     private static IDictionary<string, object?> GetKeys(EntityEntry entry)
-        => entry.Properties.Where(p => p.Metadata.IsPrimaryKey()).ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
+        => entry.Properties.Where(p => p.Metadata.IsPrimaryKey())
+               .ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
 
-    // Güncelleme durumunda sadece değişen özellikleri, silme durumunda tüm özellikleri alır.
-    private static IDictionary<string, object?> GetOriginalValues(EntityEntry entry)
-        => entry.Properties.Where(p => entry.State == EntityState.Deleted || p.IsModified).ToDictionary(p => p.Metadata.Name, p => p.OriginalValue);
+    private static IDictionary<string, object?> MaskValues(PropertyValues values, EntityEntry entry)
+    {
+        var dict = values.Properties.ToDictionary(p => p.Name, p => values[p]);
+        var table = entry.Metadata.GetTableName()?.ToLowerInvariant();
 
-    // Güncelleme durumunda sadece değişen özellikleri, ekleme durumunda tüm özellikleri alır.
-    private static IDictionary<string, object?> GetCurrentValues(EntityEntry entry)
-        => entry.Properties.Where(p => entry.State == EntityState.Added || p.IsModified).ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
+        foreach (var p in entry.Metadata.GetProperties())
+        {
+            var clrProp = entry.Entity.GetType().GetProperty(p.Name, BindingFlags.Public | BindingFlags.Instance);
+            var hasPii = clrProp?.GetCustomAttribute<PiiAttribute>() != null;
+            if (hasPii)
+            {
+                dict[p.Name] = "***"; // attribute maskesi kullanılabilir
+                continue;
+            }
+            var key = $"{table}.{p.GetColumnName(StoreObjectIdentifier.Table(table!, null))}".ToLowerInvariant();
+            if (PiiMask.TryGetValue(key, out var mask))
+                dict[p.Name] = mask;
+        }
+        return dict;
+    }
 }

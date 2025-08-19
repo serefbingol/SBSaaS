@@ -1,6 +1,8 @@
+using SBSaaS.Domain.Common;
+
 namespace SBSaaS.Infrastructure.Audit;
 
-public class ChangeLog
+public class ChangeLog : ITenantScoped
 {
     public long Id { get; set; }
     public Guid TenantId { get; set; }
