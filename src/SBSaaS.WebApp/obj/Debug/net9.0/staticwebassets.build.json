@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "u9w2HeR2EkY+RbYqvPQR9Ax8DZvvXkwud5Zzg5JxFHU=",
+  "Hash": "tWItElH+0x+SgR44Di8Za8F2TnTOwYl5AmlRh6/Qxbo=",
   "Source": "SBSaaS.WebApp",
   "BasePath": "/",
   "Mode": "Root",
@@ -31,8 +31,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "manifest",
-      "Fingerprint": "2iew39ylwj",
-      "Integrity": "luf0rmUUOJuVTFoyvKal3gGDi4SPoY1ttb5ztLAjGqU=",
+      "Fingerprint": "s1vwh4ybeh",
+      "Integrity": "MIYUTgPX5/Rm8zUvcwq5dVcqayDhaRg5nyfEBxVzG3w=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "obj/Debug/net9.0/blazor.boot.json"
@@ -1081,8 +1081,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "symbol",
-      "Fingerprint": "d0b155359x",
-      "Integrity": "A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20=",
+      "Fingerprint": "0338oo0pe4",
+      "Integrity": "nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Common/bin/Debug/net9.0/SBSaaS.Common.pdb"
@@ -1102,8 +1102,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "runtime",
-      "Fingerprint": "mxbeszafpd",
-      "Integrity": "6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA=",
+      "Fingerprint": "okg9wayrlf",
+      "Integrity": "2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/webcil/SBSaaS.Common.wasm"
@@ -1123,8 +1123,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "symbol",
-      "Fingerprint": "ukvphv157h",
-      "Integrity": "HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk=",
+      "Fingerprint": "6324xfkb98",
+      "Integrity": "kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.Domain/bin/Debug/net9.0/SBSaaS.Domain.pdb"
@@ -1144,8 +1144,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "runtime",
-      "Fingerprint": "j7r4d70ju6",
-      "Integrity": "v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU=",
+      "Fingerprint": "5kqxw1lzd0",
+      "Integrity": "Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/webcil/SBSaaS.Domain.wasm"
@@ -1165,8 +1165,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "symbol",
-      "Fingerprint": "qd4383z3sr",
-      "Integrity": "EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I=",
+      "Fingerprint": "n8h443zit8",
+      "Integrity": "ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "obj/Debug/net9.0/SBSaaS.WebApp.pdb"
@@ -1186,8 +1186,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "runtime",
-      "Fingerprint": "5tt2swc1e9",
-      "Integrity": "l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys=",
+      "Fingerprint": "ls5q5ak8hs",
+      "Integrity": "K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/webcil/SBSaaS.WebApp.wasm"
@@ -4679,12 +4679,12 @@
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/System.Security.Cryptography.OpenSsl.wasm"
     },
     {
-      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-5tt2swc1e9.gz",
+      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-ls5q5ak8hs.gz",
       "SourceId": "SBSaaS.WebApp",
       "SourceType": "Computed",
       "ContentRoot": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/",
       "BasePath": "/",
-      "RelativePath": "_framework/SBSaaS.WebApp#[.{fingerprint=5tt2swc1e9}]!.wasm.gz",
+      "RelativePath": "_framework/SBSaaS.WebApp#[.{fingerprint=ls5q5ak8hs}]!.wasm.gz",
       "AssetKind": "Build",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -4693,8 +4693,8 @@
       "RelatedAsset": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.WebApp.wasm",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "b0ftuvqfae",
-      "Integrity": "Owu/HgaTO9ISTOx9Fb5navR1AWK8Nxv2Es2V3Os0GJo=",
+      "Fingerprint": "9dbup3cm5z",
+      "Integrity": "DXqVqvRcab0FOYOlvoP197U/pq+RoNIC2jvrw51PWMc=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.WebApp.wasm"
@@ -5330,7 +5330,7 @@
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/System.Security.wasm"
     },
     {
-      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/3yj3jvplq6-2iew39ylwj.gz",
+      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/3yj3jvplq6-s1vwh4ybeh.gz",
       "SourceId": "SBSaaS.WebApp",
       "SourceType": "Computed",
       "ContentRoot": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/",
@@ -5344,8 +5344,8 @@
       "RelatedAsset": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/blazor.boot.json",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "j9cbxh5sdf",
-      "Integrity": "KfiBTPxdTnGYWJGPyFkr2K/9vZnQxFhQxlIA603we+Y=",
+      "Fingerprint": "n4rypzglk1",
+      "Integrity": "Kd39lcM391mZ2pWMHEgYF5j8mp5QaXlkVnCRWap51Sk=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/blazor.boot.json"
@@ -6548,12 +6548,12 @@
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/System.Diagnostics.FileVersionInfo.wasm"
     },
     {
-      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-mxbeszafpd.gz",
+      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-okg9wayrlf.gz",
       "SourceId": "SBSaaS.WebApp",
       "SourceType": "Computed",
       "ContentRoot": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/",
       "BasePath": "/",
-      "RelativePath": "_framework/SBSaaS.Common#[.{fingerprint=mxbeszafpd}]!.wasm.gz",
+      "RelativePath": "_framework/SBSaaS.Common#[.{fingerprint=okg9wayrlf}]!.wasm.gz",
       "AssetKind": "Build",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -6562,8 +6562,8 @@
       "RelatedAsset": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Common.wasm",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "bz07xl1t9q",
-      "Integrity": "t4W/NNLve8Asn6a3zn0GwM9Qxhl8DOdnbnRNNmefdF8=",
+      "Fingerprint": "04ulcxnlnz",
+      "Integrity": "sOt6hCFPwUJTeswz8u2wnBXbTIJl35YgiYTbXPzQYJc=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Common.wasm"
@@ -6632,12 +6632,12 @@
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map"
     },
     {
-      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-ukvphv157h.gz",
+      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-6324xfkb98.gz",
       "SourceId": "SBSaaS.WebApp",
       "SourceType": "Computed",
       "ContentRoot": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/",
       "BasePath": "/",
-      "RelativePath": "_framework/SBSaaS.Domain#[.{fingerprint=ukvphv157h}]!.pdb.gz",
+      "RelativePath": "_framework/SBSaaS.Domain#[.{fingerprint=6324xfkb98}]!.pdb.gz",
       "AssetKind": "Build",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -6646,8 +6646,8 @@
       "RelatedAsset": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Domain.pdb",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "003o0lcz8u",
-      "Integrity": "MBm4TC3PsiovoNff2hz6002MDdpPc2KPv2BpKPh7eyQ=",
+      "Fingerprint": "ydjeocukl6",
+      "Integrity": "Wv6Q5DHsxRKwdDomP9Tr4K48NuW7IFpP6j+k4WFNwvI=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Domain.pdb"
@@ -8606,12 +8606,12 @@
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/wwwroot/lib/bootstrap/dist/css/bootstrap.css"
     },
     {
-      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-j7r4d70ju6.gz",
+      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-5kqxw1lzd0.gz",
       "SourceId": "SBSaaS.WebApp",
       "SourceType": "Computed",
       "ContentRoot": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/",
       "BasePath": "/",
-      "RelativePath": "_framework/SBSaaS.Domain#[.{fingerprint=j7r4d70ju6}]!.wasm.gz",
+      "RelativePath": "_framework/SBSaaS.Domain#[.{fingerprint=5kqxw1lzd0}]!.wasm.gz",
       "AssetKind": "Build",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -8620,8 +8620,8 @@
       "RelatedAsset": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Domain.wasm",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "bzw53mwldg",
-      "Integrity": "yY7KIlUJmpW7G0juyKjr+IFwyeHw+5Q7AHAg2wEIPUM=",
+      "Fingerprint": "12nygdac22",
+      "Integrity": "x1KH1Spou3bPtuhyvKpNqwsjmmglTwdF6pGxEeDTLE4=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Domain.wasm"
@@ -9047,12 +9047,12 @@
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/System.wasm"
     },
     {
-      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-d0b155359x.gz",
+      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-0338oo0pe4.gz",
       "SourceId": "SBSaaS.WebApp",
       "SourceType": "Computed",
       "ContentRoot": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/",
       "BasePath": "/",
-      "RelativePath": "_framework/SBSaaS.Common#[.{fingerprint=d0b155359x}]!.pdb.gz",
+      "RelativePath": "_framework/SBSaaS.Common#[.{fingerprint=0338oo0pe4}]!.pdb.gz",
       "AssetKind": "Build",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -9061,8 +9061,8 @@
       "RelatedAsset": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Common.pdb",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "4t9ozbxeix",
-      "Integrity": "qOZVWId7mo0ae/Rl4i4g/I1lcgr2E6QLpANTGJq0RFo=",
+      "Fingerprint": "v25a4iiwsa",
+      "Integrity": "yZvHlc4yRkqZJtBc1OCIPsgrS24/ljHfE78FvxTlWkQ=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Common.pdb"
@@ -9530,12 +9530,12 @@
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/System.Runtime.CompilerServices.VisualC.wasm"
     },
     {
-      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-qd4383z3sr.gz",
+      "Identity": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-n8h443zit8.gz",
       "SourceId": "SBSaaS.WebApp",
       "SourceType": "Computed",
       "ContentRoot": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/",
       "BasePath": "/",
-      "RelativePath": "_framework/SBSaaS.WebApp#[.{fingerprint=qd4383z3sr}]!.pdb.gz",
+      "RelativePath": "_framework/SBSaaS.WebApp#[.{fingerprint=n8h443zit8}]!.pdb.gz",
       "AssetKind": "Build",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -9544,8 +9544,8 @@
       "RelatedAsset": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.WebApp.pdb",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "2b9yj2yyd9",
-      "Integrity": "nj7KR4Mr9xUY2uCFFUO1QqDUk4ElVUI9kiWMc/MjsV4=",
+      "Fingerprint": "7phpkkrnrv",
+      "Integrity": "2/m8/dgTzIgmgAbpPjqMZpP2NApZh8yetIlr7LzP064=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.WebApp.pdb"
@@ -11293,11 +11293,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"luf0rmUUOJuVTFoyvKal3gGDi4SPoY1ttb5ztLAjGqU=\""
+          "Value": "\"MIYUTgPX5/Rm8zUvcwq5dVcqayDhaRg5nyfEBxVzG3w=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11307,18 +11307,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-luf0rmUUOJuVTFoyvKal3gGDi4SPoY1ttb5ztLAjGqU="
+          "Value": "sha256-MIYUTgPX5/Rm8zUvcwq5dVcqayDhaRg5nyfEBxVzG3w="
         }
       ]
     },
     {
       "Route": "_framework/blazor.boot.json",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/3yj3jvplq6-2iew39ylwj.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/3yj3jvplq6-s1vwh4ybeh.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000075815011"
+          "Quality": "0.000075803517"
         }
       ],
       "ResponseHeaders": [
@@ -11328,11 +11328,11 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "13189"
+          "Value": "13191"
         },
         {
           "Name": "ETag",
-          "Value": "\"KfiBTPxdTnGYWJGPyFkr2K/9vZnQxFhQxlIA603we+Y=\""
+          "Value": "\"Kd39lcM391mZ2pWMHEgYF5j8mp5QaXlkVnCRWap51Sk=\""
         },
         {
           "Name": "Last-Modified",
@@ -11356,19 +11356,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"luf0rmUUOJuVTFoyvKal3gGDi4SPoY1ttb5ztLAjGqU=\""
+          "Value": "W/\"MIYUTgPX5/Rm8zUvcwq5dVcqayDhaRg5nyfEBxVzG3w=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-luf0rmUUOJuVTFoyvKal3gGDi4SPoY1ttb5ztLAjGqU="
+          "Value": "sha256-MIYUTgPX5/Rm8zUvcwq5dVcqayDhaRg5nyfEBxVzG3w="
         }
       ]
     },
     {
       "Route": "_framework/blazor.boot.json.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/3yj3jvplq6-2iew39ylwj.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/3yj3jvplq6-s1vwh4ybeh.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -11377,7 +11377,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "13189"
+          "Value": "13191"
         },
         {
           "Name": "Content-Type",
@@ -11385,7 +11385,7 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"KfiBTPxdTnGYWJGPyFkr2K/9vZnQxFhQxlIA603we+Y=\""
+          "Value": "\"Kd39lcM391mZ2pWMHEgYF5j8mp5QaXlkVnCRWap51Sk=\""
         },
         {
           "Name": "Last-Modified",
@@ -11407,7 +11407,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-KfiBTPxdTnGYWJGPyFkr2K/9vZnQxFhQxlIA603we+Y="
+          "Value": "sha256-Kd39lcM391mZ2pWMHEgYF5j8mp5QaXlkVnCRWap51Sk="
         }
       ]
     },
@@ -11473,7 +11473,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Fri, 18 Jul 2025 19:16:24 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11526,7 +11526,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Fri, 18 Jul 2025 19:16:24 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11610,7 +11610,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11663,7 +11663,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11747,7 +11747,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11800,7 +11800,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11892,7 +11892,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11953,7 +11953,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -12947,7 +12947,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13008,7 +13008,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13100,7 +13100,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13153,7 +13153,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13245,7 +13245,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13306,7 +13306,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 15 Jul 2025 17:41:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -25853,7 +25853,7 @@
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Common.d0b155359x.pdb",
+      "Route": "_framework/SBSaaS.Common.0338oo0pe4.pdb",
       "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Common.pdb",
       "Selectors": [],
       "ResponseHeaders": [
@@ -25871,11 +25871,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20=\""
+          "Value": "\"nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:02 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:39 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -25885,7 +25885,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "d0b155359x"
+          "Value": "0338oo0pe4"
         },
         {
           "Name": "label",
@@ -25893,18 +25893,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20="
+          "Value": "sha256-nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Common.d0b155359x.pdb",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-d0b155359x.gz",
+      "Route": "_framework/SBSaaS.Common.0338oo0pe4.pdb",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-0338oo0pe4.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000146092038"
+          "Quality": "0.000146049365"
         }
       ],
       "ResponseHeaders": [
@@ -25914,15 +25914,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "6844"
+          "Value": "6846"
         },
         {
           "Name": "ETag",
-          "Value": "\"qOZVWId7mo0ae/Rl4i4g/I1lcgr2E6QLpANTGJq0RFo=\""
+          "Value": "\"yZvHlc4yRkqZJtBc1OCIPsgrS24/ljHfE78FvxTlWkQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -25942,13 +25942,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20=\""
+          "Value": "W/\"nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "d0b155359x"
+          "Value": "0338oo0pe4"
         },
         {
           "Name": "label",
@@ -25956,13 +25956,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20="
+          "Value": "sha256-nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Common.d0b155359x.pdb.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-d0b155359x.gz",
+      "Route": "_framework/SBSaaS.Common.0338oo0pe4.pdb.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-0338oo0pe4.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -25971,7 +25971,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "6844"
+          "Value": "6846"
         },
         {
           "Name": "Content-Type",
@@ -25979,11 +25979,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"qOZVWId7mo0ae/Rl4i4g/I1lcgr2E6QLpANTGJq0RFo=\""
+          "Value": "\"yZvHlc4yRkqZJtBc1OCIPsgrS24/ljHfE78FvxTlWkQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26001,7 +26001,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "d0b155359x"
+          "Value": "0338oo0pe4"
         },
         {
           "Name": "label",
@@ -26009,12 +26009,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-qOZVWId7mo0ae/Rl4i4g/I1lcgr2E6QLpANTGJq0RFo="
+          "Value": "sha256-yZvHlc4yRkqZJtBc1OCIPsgrS24/ljHfE78FvxTlWkQ="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Common.mxbeszafpd.wasm",
+      "Route": "_framework/SBSaaS.Common.okg9wayrlf.wasm",
       "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Common.wasm",
       "Selectors": [],
       "ResponseHeaders": [
@@ -26032,11 +26032,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA=\""
+          "Value": "\"2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:08 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26046,7 +26046,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "mxbeszafpd"
+          "Value": "okg9wayrlf"
         },
         {
           "Name": "label",
@@ -26054,18 +26054,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA="
+          "Value": "sha256-2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Common.mxbeszafpd.wasm",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-mxbeszafpd.gz",
+      "Route": "_framework/SBSaaS.Common.okg9wayrlf.wasm",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-okg9wayrlf.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000663129973"
+          "Quality": "0.000662690524"
         }
       ],
       "ResponseHeaders": [
@@ -26075,15 +26075,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1507"
+          "Value": "1508"
         },
         {
           "Name": "ETag",
-          "Value": "\"t4W/NNLve8Asn6a3zn0GwM9Qxhl8DOdnbnRNNmefdF8=\""
+          "Value": "\"sOt6hCFPwUJTeswz8u2wnBXbTIJl35YgiYTbXPzQYJc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26103,13 +26103,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA=\""
+          "Value": "W/\"2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "mxbeszafpd"
+          "Value": "okg9wayrlf"
         },
         {
           "Name": "label",
@@ -26117,13 +26117,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA="
+          "Value": "sha256-2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Common.mxbeszafpd.wasm.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-mxbeszafpd.gz",
+      "Route": "_framework/SBSaaS.Common.okg9wayrlf.wasm.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-okg9wayrlf.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -26132,7 +26132,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1507"
+          "Value": "1508"
         },
         {
           "Name": "Content-Type",
@@ -26140,11 +26140,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"t4W/NNLve8Asn6a3zn0GwM9Qxhl8DOdnbnRNNmefdF8=\""
+          "Value": "\"sOt6hCFPwUJTeswz8u2wnBXbTIJl35YgiYTbXPzQYJc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26162,7 +26162,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "mxbeszafpd"
+          "Value": "okg9wayrlf"
         },
         {
           "Name": "label",
@@ -26170,7 +26170,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-t4W/NNLve8Asn6a3zn0GwM9Qxhl8DOdnbnRNNmefdF8="
+          "Value": "sha256-sOt6hCFPwUJTeswz8u2wnBXbTIJl35YgiYTbXPzQYJc="
         }
       ]
     },
@@ -26193,11 +26193,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20=\""
+          "Value": "\"nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:02 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:39 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26207,18 +26207,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20="
+          "Value": "sha256-nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU="
         }
       ]
     },
     {
       "Route": "_framework/SBSaaS.Common.pdb",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-d0b155359x.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-0338oo0pe4.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000146092038"
+          "Quality": "0.000146049365"
         }
       ],
       "ResponseHeaders": [
@@ -26228,15 +26228,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "6844"
+          "Value": "6846"
         },
         {
           "Name": "ETag",
-          "Value": "\"qOZVWId7mo0ae/Rl4i4g/I1lcgr2E6QLpANTGJq0RFo=\""
+          "Value": "\"yZvHlc4yRkqZJtBc1OCIPsgrS24/ljHfE78FvxTlWkQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26256,19 +26256,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20=\""
+          "Value": "W/\"nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20="
+          "Value": "sha256-nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU="
         }
       ]
     },
     {
       "Route": "_framework/SBSaaS.Common.pdb.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-d0b155359x.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/tmo9et2ar8-0338oo0pe4.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -26277,7 +26277,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "6844"
+          "Value": "6846"
         },
         {
           "Name": "Content-Type",
@@ -26285,11 +26285,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"qOZVWId7mo0ae/Rl4i4g/I1lcgr2E6QLpANTGJq0RFo=\""
+          "Value": "\"yZvHlc4yRkqZJtBc1OCIPsgrS24/ljHfE78FvxTlWkQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26307,7 +26307,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-qOZVWId7mo0ae/Rl4i4g/I1lcgr2E6QLpANTGJq0RFo="
+          "Value": "sha256-yZvHlc4yRkqZJtBc1OCIPsgrS24/ljHfE78FvxTlWkQ="
         }
       ]
     },
@@ -26330,11 +26330,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA=\""
+          "Value": "\"2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:08 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26344,18 +26344,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA="
+          "Value": "sha256-2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI="
         }
       ]
     },
     {
       "Route": "_framework/SBSaaS.Common.wasm",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-mxbeszafpd.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-okg9wayrlf.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000663129973"
+          "Quality": "0.000662690524"
         }
       ],
       "ResponseHeaders": [
@@ -26365,15 +26365,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1507"
+          "Value": "1508"
         },
         {
           "Name": "ETag",
-          "Value": "\"t4W/NNLve8Asn6a3zn0GwM9Qxhl8DOdnbnRNNmefdF8=\""
+          "Value": "\"sOt6hCFPwUJTeswz8u2wnBXbTIJl35YgiYTbXPzQYJc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26393,19 +26393,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA=\""
+          "Value": "W/\"2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA="
+          "Value": "sha256-2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI="
         }
       ]
     },
     {
       "Route": "_framework/SBSaaS.Common.wasm.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-mxbeszafpd.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dazo2t6n4n-okg9wayrlf.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -26414,7 +26414,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1507"
+          "Value": "1508"
         },
         {
           "Name": "Content-Type",
@@ -26422,11 +26422,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"t4W/NNLve8Asn6a3zn0GwM9Qxhl8DOdnbnRNNmefdF8=\""
+          "Value": "\"sOt6hCFPwUJTeswz8u2wnBXbTIJl35YgiYTbXPzQYJc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26444,12 +26444,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-t4W/NNLve8Asn6a3zn0GwM9Qxhl8DOdnbnRNNmefdF8="
+          "Value": "sha256-sOt6hCFPwUJTeswz8u2wnBXbTIJl35YgiYTbXPzQYJc="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Domain.j7r4d70ju6.wasm",
+      "Route": "_framework/SBSaaS.Domain.5kqxw1lzd0.wasm",
       "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Domain.wasm",
       "Selectors": [],
       "ResponseHeaders": [
@@ -26467,11 +26467,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU=\""
+          "Value": "\"Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:08 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26481,7 +26481,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "j7r4d70ju6"
+          "Value": "5kqxw1lzd0"
         },
         {
           "Name": "label",
@@ -26489,13 +26489,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU="
+          "Value": "sha256-Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Domain.j7r4d70ju6.wasm",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-j7r4d70ju6.gz",
+      "Route": "_framework/SBSaaS.Domain.5kqxw1lzd0.wasm",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-5kqxw1lzd0.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
@@ -26514,11 +26514,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yY7KIlUJmpW7G0juyKjr+IFwyeHw+5Q7AHAg2wEIPUM=\""
+          "Value": "\"x1KH1Spou3bPtuhyvKpNqwsjmmglTwdF6pGxEeDTLE4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26538,13 +26538,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU=\""
+          "Value": "W/\"Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "j7r4d70ju6"
+          "Value": "5kqxw1lzd0"
         },
         {
           "Name": "label",
@@ -26552,13 +26552,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU="
+          "Value": "sha256-Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Domain.j7r4d70ju6.wasm.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-j7r4d70ju6.gz",
+      "Route": "_framework/SBSaaS.Domain.5kqxw1lzd0.wasm.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-5kqxw1lzd0.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -26575,11 +26575,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yY7KIlUJmpW7G0juyKjr+IFwyeHw+5Q7AHAg2wEIPUM=\""
+          "Value": "\"x1KH1Spou3bPtuhyvKpNqwsjmmglTwdF6pGxEeDTLE4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26597,7 +26597,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "j7r4d70ju6"
+          "Value": "5kqxw1lzd0"
         },
         {
           "Name": "label",
@@ -26605,12 +26605,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-yY7KIlUJmpW7G0juyKjr+IFwyeHw+5Q7AHAg2wEIPUM="
+          "Value": "sha256-x1KH1Spou3bPtuhyvKpNqwsjmmglTwdF6pGxEeDTLE4="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Domain.pdb",
+      "Route": "_framework/SBSaaS.Domain.6324xfkb98.pdb",
       "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Domain.pdb",
       "Selectors": [],
       "ResponseHeaders": [
@@ -26628,148 +26628,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk=\""
+          "Value": "\"kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:01 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk="
-        }
-      ]
-    },
-    {
-      "Route": "_framework/SBSaaS.Domain.pdb",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-ukvphv157h.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000124316261"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "8043"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"MBm4TC3PsiovoNff2hz6002MDdpPc2KPv2BpKPh7eyQ=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "application/octet-stream"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk=\""
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk="
-        }
-      ]
-    },
-    {
-      "Route": "_framework/SBSaaS.Domain.pdb.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-ukvphv157h.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "8043"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "application/octet-stream"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"MBm4TC3PsiovoNff2hz6002MDdpPc2KPv2BpKPh7eyQ=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-MBm4TC3PsiovoNff2hz6002MDdpPc2KPv2BpKPh7eyQ="
-        }
-      ]
-    },
-    {
-      "Route": "_framework/SBSaaS.Domain.ukvphv157h.pdb",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Domain.pdb",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "14612"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "application/octet-stream"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:01 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26779,7 +26642,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ukvphv157h"
+          "Value": "6324xfkb98"
         },
         {
           "Name": "label",
@@ -26787,18 +26650,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk="
+          "Value": "sha256-kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Domain.ukvphv157h.pdb",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-ukvphv157h.gz",
+      "Route": "_framework/SBSaaS.Domain.6324xfkb98.pdb",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-6324xfkb98.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000124316261"
+          "Quality": "0.000124239036"
         }
       ],
       "ResponseHeaders": [
@@ -26808,15 +26671,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "8043"
+          "Value": "8048"
         },
         {
           "Name": "ETag",
-          "Value": "\"MBm4TC3PsiovoNff2hz6002MDdpPc2KPv2BpKPh7eyQ=\""
+          "Value": "\"Wv6Q5DHsxRKwdDomP9Tr4K48NuW7IFpP6j+k4WFNwvI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26836,13 +26699,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk=\""
+          "Value": "W/\"kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ukvphv157h"
+          "Value": "6324xfkb98"
         },
         {
           "Name": "label",
@@ -26850,13 +26713,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk="
+          "Value": "sha256-kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.Domain.ukvphv157h.pdb.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-ukvphv157h.gz",
+      "Route": "_framework/SBSaaS.Domain.6324xfkb98.pdb.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-6324xfkb98.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -26865,7 +26728,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "8043"
+          "Value": "8048"
         },
         {
           "Name": "Content-Type",
@@ -26873,11 +26736,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"MBm4TC3PsiovoNff2hz6002MDdpPc2KPv2BpKPh7eyQ=\""
+          "Value": "\"Wv6Q5DHsxRKwdDomP9Tr4K48NuW7IFpP6j+k4WFNwvI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26895,7 +26758,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ukvphv157h"
+          "Value": "6324xfkb98"
         },
         {
           "Name": "label",
@@ -26903,7 +26766,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-MBm4TC3PsiovoNff2hz6002MDdpPc2KPv2BpKPh7eyQ="
+          "Value": "sha256-Wv6Q5DHsxRKwdDomP9Tr4K48NuW7IFpP6j+k4WFNwvI="
+        }
+      ]
+    },
+    {
+      "Route": "_framework/SBSaaS.Domain.pdb",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.Domain.pdb",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14612"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 19 Aug 2025 09:12:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ="
+        }
+      ]
+    },
+    {
+      "Route": "_framework/SBSaaS.Domain.pdb",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-6324xfkb98.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000124239036"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8048"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Wv6Q5DHsxRKwdDomP9Tr4K48NuW7IFpP6j+k4WFNwvI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ="
+        }
+      ]
+    },
+    {
+      "Route": "_framework/SBSaaS.Domain.pdb.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/dgrqgaqjxo-6324xfkb98.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8048"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Wv6Q5DHsxRKwdDomP9Tr4K48NuW7IFpP6j+k4WFNwvI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Wv6Q5DHsxRKwdDomP9Tr4K48NuW7IFpP6j+k4WFNwvI="
         }
       ]
     },
@@ -26926,11 +26926,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU=\""
+          "Value": "\"Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:08 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26940,13 +26940,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU="
+          "Value": "sha256-Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw="
         }
       ]
     },
     {
       "Route": "_framework/SBSaaS.Domain.wasm",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-j7r4d70ju6.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-5kqxw1lzd0.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
@@ -26965,11 +26965,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yY7KIlUJmpW7G0juyKjr+IFwyeHw+5Q7AHAg2wEIPUM=\""
+          "Value": "\"x1KH1Spou3bPtuhyvKpNqwsjmmglTwdF6pGxEeDTLE4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -26989,19 +26989,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU=\""
+          "Value": "W/\"Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU="
+          "Value": "sha256-Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw="
         }
       ]
     },
     {
       "Route": "_framework/SBSaaS.Domain.wasm.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-j7r4d70ju6.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/rn3tgxkkqt-5kqxw1lzd0.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -27018,11 +27018,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yY7KIlUJmpW7G0juyKjr+IFwyeHw+5Q7AHAg2wEIPUM=\""
+          "Value": "\"x1KH1Spou3bPtuhyvKpNqwsjmmglTwdF6pGxEeDTLE4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:10 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27040,12 +27040,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-yY7KIlUJmpW7G0juyKjr+IFwyeHw+5Q7AHAg2wEIPUM="
+          "Value": "sha256-x1KH1Spou3bPtuhyvKpNqwsjmmglTwdF6pGxEeDTLE4="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.WebApp.5tt2swc1e9.wasm",
+      "Route": "_framework/SBSaaS.WebApp.ls5q5ak8hs.wasm",
       "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.WebApp.wasm",
       "Selectors": [],
       "ResponseHeaders": [
@@ -27063,11 +27063,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys=\""
+          "Value": "\"K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:08 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27077,7 +27077,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "5tt2swc1e9"
+          "Value": "ls5q5ak8hs"
         },
         {
           "Name": "label",
@@ -27085,18 +27085,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys="
+          "Value": "sha256-K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.WebApp.5tt2swc1e9.wasm",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-5tt2swc1e9.gz",
+      "Route": "_framework/SBSaaS.WebApp.ls5q5ak8hs.wasm",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-ls5q5ak8hs.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000130718954"
+          "Quality": "0.000130463144"
         }
       ],
       "ResponseHeaders": [
@@ -27106,15 +27106,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "7649"
+          "Value": "7664"
         },
         {
           "Name": "ETag",
-          "Value": "\"Owu/HgaTO9ISTOx9Fb5navR1AWK8Nxv2Es2V3Os0GJo=\""
+          "Value": "\"DXqVqvRcab0FOYOlvoP197U/pq+RoNIC2jvrw51PWMc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27134,13 +27134,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys=\""
+          "Value": "W/\"K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "5tt2swc1e9"
+          "Value": "ls5q5ak8hs"
         },
         {
           "Name": "label",
@@ -27148,13 +27148,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys="
+          "Value": "sha256-K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.WebApp.5tt2swc1e9.wasm.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-5tt2swc1e9.gz",
+      "Route": "_framework/SBSaaS.WebApp.ls5q5ak8hs.wasm.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-ls5q5ak8hs.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -27163,7 +27163,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "7649"
+          "Value": "7664"
         },
         {
           "Name": "Content-Type",
@@ -27171,11 +27171,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Owu/HgaTO9ISTOx9Fb5navR1AWK8Nxv2Es2V3Os0GJo=\""
+          "Value": "\"DXqVqvRcab0FOYOlvoP197U/pq+RoNIC2jvrw51PWMc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27193,7 +27193,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "5tt2swc1e9"
+          "Value": "ls5q5ak8hs"
         },
         {
           "Name": "label",
@@ -27201,12 +27201,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-Owu/HgaTO9ISTOx9Fb5navR1AWK8Nxv2Es2V3Os0GJo="
+          "Value": "sha256-DXqVqvRcab0FOYOlvoP197U/pq+RoNIC2jvrw51PWMc="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.WebApp.pdb",
+      "Route": "_framework/SBSaaS.WebApp.n8h443zit8.pdb",
       "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.WebApp.pdb",
       "Selectors": [],
       "ResponseHeaders": [
@@ -27224,148 +27224,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I=\""
+          "Value": "\"ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:07 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I="
-        }
-      ]
-    },
-    {
-      "Route": "_framework/SBSaaS.WebApp.pdb",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-qd4383z3sr.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000057329588"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "17442"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"nj7KR4Mr9xUY2uCFFUO1QqDUk4ElVUI9kiWMc/MjsV4=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "application/octet-stream"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I=\""
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I="
-        }
-      ]
-    },
-    {
-      "Route": "_framework/SBSaaS.WebApp.pdb.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-qd4383z3sr.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "17442"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "application/octet-stream"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"nj7KR4Mr9xUY2uCFFUO1QqDUk4ElVUI9kiWMc/MjsV4=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-nj7KR4Mr9xUY2uCFFUO1QqDUk4ElVUI9kiWMc/MjsV4="
-        }
-      ]
-    },
-    {
-      "Route": "_framework/SBSaaS.WebApp.qd4383z3sr.pdb",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.WebApp.pdb",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "24424"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "application/octet-stream"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:07 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27375,7 +27238,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "qd4383z3sr"
+          "Value": "n8h443zit8"
         },
         {
           "Name": "label",
@@ -27383,18 +27246,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I="
+          "Value": "sha256-ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.WebApp.qd4383z3sr.pdb",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-qd4383z3sr.gz",
+      "Route": "_framework/SBSaaS.WebApp.n8h443zit8.pdb",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-n8h443zit8.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000057329588"
+          "Quality": "0.000057326301"
         }
       ],
       "ResponseHeaders": [
@@ -27404,15 +27267,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "17442"
+          "Value": "17443"
         },
         {
           "Name": "ETag",
-          "Value": "\"nj7KR4Mr9xUY2uCFFUO1QqDUk4ElVUI9kiWMc/MjsV4=\""
+          "Value": "\"2/m8/dgTzIgmgAbpPjqMZpP2NApZh8yetIlr7LzP064=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27432,13 +27295,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I=\""
+          "Value": "W/\"ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "qd4383z3sr"
+          "Value": "n8h443zit8"
         },
         {
           "Name": "label",
@@ -27446,13 +27309,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I="
+          "Value": "sha256-ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo="
         }
       ]
     },
     {
-      "Route": "_framework/SBSaaS.WebApp.qd4383z3sr.pdb.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-qd4383z3sr.gz",
+      "Route": "_framework/SBSaaS.WebApp.n8h443zit8.pdb.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-n8h443zit8.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -27461,7 +27324,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "17442"
+          "Value": "17443"
         },
         {
           "Name": "Content-Type",
@@ -27469,11 +27332,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"nj7KR4Mr9xUY2uCFFUO1QqDUk4ElVUI9kiWMc/MjsV4=\""
+          "Value": "\"2/m8/dgTzIgmgAbpPjqMZpP2NApZh8yetIlr7LzP064=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27491,7 +27354,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "qd4383z3sr"
+          "Value": "n8h443zit8"
         },
         {
           "Name": "label",
@@ -27499,7 +27362,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-nj7KR4Mr9xUY2uCFFUO1QqDUk4ElVUI9kiWMc/MjsV4="
+          "Value": "sha256-2/m8/dgTzIgmgAbpPjqMZpP2NApZh8yetIlr7LzP064="
+        }
+      ]
+    },
+    {
+      "Route": "_framework/SBSaaS.WebApp.pdb",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/bin/Debug/net9.0/wwwroot/_framework/SBSaaS.WebApp.pdb",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24424"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 19 Aug 2025 09:12:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo="
+        }
+      ]
+    },
+    {
+      "Route": "_framework/SBSaaS.WebApp.pdb",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-n8h443zit8.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000057326301"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "17443"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"2/m8/dgTzIgmgAbpPjqMZpP2NApZh8yetIlr7LzP064=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo="
+        }
+      ]
+    },
+    {
+      "Route": "_framework/SBSaaS.WebApp.pdb.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/vzynukq233-n8h443zit8.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "17443"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"2/m8/dgTzIgmgAbpPjqMZpP2NApZh8yetIlr7LzP064=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-2/m8/dgTzIgmgAbpPjqMZpP2NApZh8yetIlr7LzP064="
         }
       ]
     },
@@ -27522,11 +27522,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys=\""
+          "Value": "\"K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:08 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27536,18 +27536,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys="
+          "Value": "sha256-K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw="
         }
       ]
     },
     {
       "Route": "_framework/SBSaaS.WebApp.wasm",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-5tt2swc1e9.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-ls5q5ak8hs.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000130718954"
+          "Quality": "0.000130463144"
         }
       ],
       "ResponseHeaders": [
@@ -27557,15 +27557,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "7649"
+          "Value": "7664"
         },
         {
           "Name": "ETag",
-          "Value": "\"Owu/HgaTO9ISTOx9Fb5navR1AWK8Nxv2Es2V3Os0GJo=\""
+          "Value": "\"DXqVqvRcab0FOYOlvoP197U/pq+RoNIC2jvrw51PWMc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27585,19 +27585,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys=\""
+          "Value": "W/\"K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys="
+          "Value": "sha256-K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw="
         }
       ]
     },
     {
       "Route": "_framework/SBSaaS.WebApp.wasm.gz",
-      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-5tt2swc1e9.gz",
+      "AssetFile": "/home/sb/VSCODE_PROJECTS/GPT5_Saas/SBSaaS/src/SBSaaS.WebApp/obj/Debug/net9.0/compressed/0r59igta0s-ls5q5ak8hs.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -27606,7 +27606,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "7649"
+          "Value": "7664"
         },
         {
           "Name": "Content-Type",
@@ -27614,11 +27614,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Owu/HgaTO9ISTOx9Fb5navR1AWK8Nxv2Es2V3Os0GJo=\""
+          "Value": "\"DXqVqvRcab0FOYOlvoP197U/pq+RoNIC2jvrw51PWMc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 19 Aug 2025 07:54:09 GMT"
+          "Value": "Tue, 19 Aug 2025 09:12:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -27636,7 +27636,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-Owu/HgaTO9ISTOx9Fb5navR1AWK8Nxv2Es2V3Os0GJo="
+          "Value": "sha256-DXqVqvRcab0FOYOlvoP197U/pq+RoNIC2jvrw51PWMc="
         }
       ]
     },

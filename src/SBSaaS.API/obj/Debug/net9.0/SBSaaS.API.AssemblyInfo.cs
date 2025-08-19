@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SBSaaS.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+329448a1ba1b8fb206ccb180781b5edd4de86403")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+36907376ff4e037509b453d183f9a799513bfd0c")]
 [assembly: System.Reflection.AssemblyProductAttribute("SBSaaS.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SBSaaS.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

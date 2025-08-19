@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "SBSaaS.WebApp",
   "resources": {
-    "hash": "sha256-/zCHAzj+9lt/DGKmp4omO2hFR/alMoQjk+0IBJg1lBM=",
+    "hash": "sha256-lGMy8Gmhjhg6lInuH5djvqY3nXyFL6XhnOwRPr9VGoA=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Authorization.tnyc7xpluy.wasm": "Microsoft.AspNetCore.Authorization.wasm",
       "Microsoft.AspNetCore.Components.t32damlu4o.wasm": "Microsoft.AspNetCore.Components.wasm",
@@ -211,12 +211,12 @@
       "icudt_CJK.tjcz0u77k5.dat": "icudt_CJK.dat",
       "icudt_EFIGS.tptq2av103.dat": "icudt_EFIGS.dat",
       "icudt_no_CJK.lfu7j35m59.dat": "icudt_no_CJK.dat",
-      "SBSaaS.Common.mxbeszafpd.wasm": "SBSaaS.Common.wasm",
-      "SBSaaS.Domain.j7r4d70ju6.wasm": "SBSaaS.Domain.wasm",
-      "SBSaaS.Common.d0b155359x.pdb": "SBSaaS.Common.pdb",
-      "SBSaaS.Domain.ukvphv157h.pdb": "SBSaaS.Domain.pdb",
-      "SBSaaS.WebApp.5tt2swc1e9.wasm": "SBSaaS.WebApp.wasm",
-      "SBSaaS.WebApp.qd4383z3sr.pdb": "SBSaaS.WebApp.pdb"
+      "SBSaaS.Common.okg9wayrlf.wasm": "SBSaaS.Common.wasm",
+      "SBSaaS.Domain.5kqxw1lzd0.wasm": "SBSaaS.Domain.wasm",
+      "SBSaaS.Common.0338oo0pe4.pdb": "SBSaaS.Common.pdb",
+      "SBSaaS.Domain.6324xfkb98.pdb": "SBSaaS.Domain.pdb",
+      "SBSaaS.WebApp.ls5q5ak8hs.wasm": "SBSaaS.WebApp.wasm",
+      "SBSaaS.WebApp.n8h443zit8.pdb": "SBSaaS.WebApp.pdb"
     },
     "jsModuleNative": {
       "dotnet.native.50iqa8w3ys.js": "sha256-pQdXuxfVeqYHOwd5HUM2ERd7OnXirj9JTF37b6OdTAc="
@@ -436,14 +436,14 @@
       "WindowsBase.361km0836k.wasm": "sha256-FacUCEIJYTnbOWgX/R9QP2QnurqRZwRIkDAH0N9z69s=",
       "mscorlib.qiu3j3msqk.wasm": "sha256-QvztpxTOEw4aMIl7zP3QtsPLNv/IWaK5wq22J4ReGrA=",
       "netstandard.lp03u0xxi4.wasm": "sha256-WVQsxULiAiEbyXLKolS7txnWVT82SsvsuMe4jJ+SqqI=",
-      "SBSaaS.Common.mxbeszafpd.wasm": "sha256-6pv1yRT8pHtoUg9ZDyq1IFbuf4qPOY/Fs2xNnFa6TLA=",
-      "SBSaaS.Domain.j7r4d70ju6.wasm": "sha256-v8uPnQ/5tg9tqboEraFtg7oztVU0LcmiCvEC3k5/UOU=",
-      "SBSaaS.WebApp.5tt2swc1e9.wasm": "sha256-l+C27pO2hTKKOdQ0VCMMzdvooW9QuFmcbishtMyn2ys="
+      "SBSaaS.Common.okg9wayrlf.wasm": "sha256-2Nv4RN3iWOKgRnUY+/tbunter65x5KQB8YSK5m1uuKI=",
+      "SBSaaS.Domain.5kqxw1lzd0.wasm": "sha256-Syd9vLS/yBq7aa4xZArq8Q2lMhJL8SVPVo1Df9W+YAw=",
+      "SBSaaS.WebApp.ls5q5ak8hs.wasm": "sha256-K5MipSp3MS3ONMAvPIpgw9g0e021kpOS5v0yZMm+Xzw="
     },
     "pdb": {
-      "SBSaaS.Common.d0b155359x.pdb": "sha256-A0n4n7+D3vnOPThV+MGFcONtL8e4MVb5CYtY+7Q1Z20=",
-      "SBSaaS.Domain.ukvphv157h.pdb": "sha256-HklBvULZgWI2/mxueDRlSZJ5o+qZqmqiVNBkFlb5Bbk=",
-      "SBSaaS.WebApp.qd4383z3sr.pdb": "sha256-EuNObMkHK3Lfidcxhpyv3J5rHUlRGpJZFaiVJRY9r+I="
+      "SBSaaS.Common.0338oo0pe4.pdb": "sha256-nHmOwOJGGd8DiKaLCz3OgLMPcugF3SpukzbVOevZoFU=",
+      "SBSaaS.Domain.6324xfkb98.pdb": "sha256-kkBjDqviIYsaq38vLaOADHNRZcFb/Jc1owNSw86X2tQ=",
+      "SBSaaS.WebApp.n8h443zit8.pdb": "sha256-ua+pWRUhAE2N2u3wjcULz+g5bmMo9MlqDf+7TZZQ4qo="
     }
   },
   "cacheBootResources": true,

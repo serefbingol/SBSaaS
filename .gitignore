@@ -1,1 +1,40 @@
-node_modules
+# =========================================
+# Visual Studio / .NET
+# =========================================
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio IDE
+.vs/
+
+# Rider IDE
+.idea/
+
+# Test Results
+TestResults/
+*.trx
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+/packages/
+
+# Secrets files that should not be committed
+appsettings.Development.json
+secrets.json
+
+# =========================================
+# Node.js
+# =========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
