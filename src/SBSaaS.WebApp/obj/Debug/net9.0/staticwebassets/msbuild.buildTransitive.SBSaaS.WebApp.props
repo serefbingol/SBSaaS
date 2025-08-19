@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/SBSaaS.WebApp.props" />
-</Project>
