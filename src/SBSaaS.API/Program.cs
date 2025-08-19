@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Localization middleware
-app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+app.UseRequestLocalization();
 
 // Custom middleware
 app.UseMiddleware<TenantMiddleware>();
@@ -66,7 +66,8 @@ app.UseAuthorization();
 
 // Map endpoints
 app.MapControllers();
-app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }))
+   .WithMetadata(new AllowAnonymousTenantAttribute());
 
 // 4. Run the application.
 app.Run();

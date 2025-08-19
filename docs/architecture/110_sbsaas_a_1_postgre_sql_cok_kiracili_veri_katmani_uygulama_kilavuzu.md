@@ -144,13 +144,6 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
         var now = DateTimeOffset.UtcNow;
         var currentTenantId = _tenant.TenantId;
 
-        // TenantId'si olmayan bir context ile tenant-scoped veri yazmaya çalışmayı engelle.
-        // Bu, sistem düzeyinde (tenant-agnostic) işlemlerin yanlışlıkla tenant verisine dokunmasını önler.
-        if (currentTenantId == Guid.Empty && ChangeTracker.Entries<ITenantScoped>().Any(e => e.State != EntityState.Unchanged))
-        {
-            throw new InvalidOperationException("A valid tenant context is required to save tenant-scoped entities.");
-        }
-
         foreach (var entry in ChangeTracker.Entries())
         {
             if (entry.Entity is AuditableEntity aud)
@@ -164,8 +157,16 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        // Yeni kayıtlara mevcut tenantId'yi otomatik ata.
-                        scoped.TenantId = currentTenantId;
+                        // Eğer TenantId manuel olarak (örn: seeder tarafından) atanmamışsa, bağlamdaki tenant'ı ata.
+                        if (scoped.TenantId == Guid.Empty)
+                        {
+                            scoped.TenantId = currentTenantId;
+                        }
+                        // Atama denemesinden sonra hala TenantId boş ise bu bir hatadır.
+                        if (scoped.TenantId == Guid.Empty)
+                        {
+                            throw new InvalidOperationException($"Cannot save entity of type {entry.Entity.GetType().Name} without a TenantId.");
+                        }
                         break;
 
                     case EntityState.Modified:
@@ -272,7 +273,7 @@ app.UseMiddleware<SBSaaS.API.Middleware.TenantMiddleware>();
 ```json
 {
   "ConnectionStrings": {
-    "Postgres": "Host=localhost;Port=5432;Database=sbsass;Username=postgres;Password=postgres;"
+    "Postgres": "Host=localhost;Port=5432;Database=sbsaasdb;Username=postgres;Password=postgres;"
   }
 }
 ```
@@ -309,14 +310,15 @@ public static class DbSeeder
 {
     public static async Task SeedAsync(SbsDbContext db)
     {
+        var systemTenantId = Guid.Parse("00000000-0000-0000-0000-000000000001");
         await db.Database.MigrateAsync();
 
-        if (!await db.Tenants.AnyAsync())
+        if (!await db.Tenants.AnyAsync(t => t.Id == systemTenantId))
         {
             var systemTenant = new Tenant
             {
-                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                Name = "System",
+                Id = systemTenantId,
+                Name = "System Tenant",
                 Culture = "tr-TR",
                 TimeZone = "Europe/Istanbul"
             };
@@ -325,13 +327,12 @@ public static class DbSeeder
         }
 
         // Örnek proje kaydı (seed), aktif tenant bağlamı gerektiği için manuel set ediliyor
-        var tid = Guid.Parse("11111111-1111-1111-1111-111111111111");
-        if (!await db.Projects.AnyAsync(p => p.TenantId == tid))
+        if (!await db.Projects.AnyAsync(p => p.TenantId == systemTenantId))
         {
             db.Projects.Add(new Project
             {
                 Id = Guid.NewGuid(),
-                TenantId = tid,
+                TenantId = systemTenantId,
                 Code = "PRJ-001",
                 Name = "Kickoff",
                 Description = "Initial seed project"
@@ -362,9 +363,9 @@ using (var scope = app.Services.CreateScope())
 
 ```bash
 # ilk migration
- dotnet ef migrations add A1_Initial --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API
+ dotnet ef migrations add A1_Initial --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API --context SbsDbContext
 # veritabanını güncelle
- dotnet ef database update --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API
+ dotnet ef database update --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API --context SbsDbContext
 ```
 
 **Oluşacak tablolar (beklenen)**
@@ -409,20 +410,25 @@ namespace SBSaaS.Infrastructure.Persistence;
 public class EfRepository<T> : IRepository<T> where T : class
 {
     private readonly SbsDbContext _db;
-    private readonly ITenantContext _tenant;
-    public EfRepository(SbsDbContext db, ITenantContext tenant)
-    { _db = db; _tenant = tenant; }
 
+    // ITenantContext'e burada ihtiyaç yoktur, çünkü asıl tenant güvenliği
+    // SbsDbContext içindeki global query filter ve SaveChangesAsync override'ı
+    // tarafından sağlanmaktadır. Bu katman, bu merkezi mantığa güvenir.
+    public EfRepository(SbsDbContext db)
+    { _db = db; }
+
+    // Okuma işlemleri, DbContext'e tanımlı global tenant filtresine güvenir.
     public async Task<T?> GetAsync(System.Linq.Expressions.Expression<Func<T, bool>> predicate, CancellationToken ct)
         => await _db.Set<T>().FirstOrDefaultAsync(predicate, ct);
 
     public async Task<IReadOnlyList<T>> ListAsync(System.Linq.Expressions.Expression<Func<T, bool>>? predicate, CancellationToken ct)
         => await (predicate == null ? _db.Set<T>() : _db.Set<T>().Where(predicate)).ToListAsync(ct);
 
+    // Yazma işlemleri, DbContext.SaveChangesAsync içindeki guard'lara güvenir.
+    // Bu guard'lar, TenantId'nin doğru ayarlandığını, değiştirilmediğini ve
+    // işlemlerin doğru tenant kapsamında yapıldığını garanti eder.
     public async Task<T> AddAsync(T entity, CancellationToken ct)
     {
-        if (entity is ITenantScoped scoped && _tenant.TenantId != Guid.Empty)
-            scoped.TenantId = _tenant.TenantId;
         _db.Set<T>().Add(entity);
         await _db.SaveChangesAsync(ct);
         return entity;
@@ -430,16 +436,12 @@ public class EfRepository<T> : IRepository<T> where T : class
 
     public async Task UpdateAsync(T entity, CancellationToken ct)
     {
-        if (entity is ITenantScoped scoped && scoped.TenantId != _tenant.TenantId)
-            throw new InvalidOperationException("Cross-tenant access is not allowed.");
         _db.Set<T>().Update(entity);
         await _db.SaveChangesAsync(ct);
     }
 
     public async Task DeleteAsync(T entity, CancellationToken ct)
     {
-        if (entity is ITenantScoped scoped && scoped.TenantId != _tenant.TenantId)
-            throw new InvalidOperationException("Cross-tenant access is not allowed.");
         _db.Set<T>().Remove(entity);
         await _db.SaveChangesAsync(ct);
     }
@@ -457,6 +459,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SBSaaS.Infrastructure.Persistence;
+using SBSaaS.Application.Common.Models; // Yeni DTO için using
 using SBSaaS.Domain.Entities.Projects;
 
 namespace SBSaaS.API.Controllers;
@@ -470,7 +473,7 @@ public class ProjectsController : ControllerBase
     public ProjectsController(SbsDbContext db) => _db = db;
 
     [HttpGet]
-    public async Task<IActionResult> List([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<ActionResult<PagedList<Project>>> List([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
         var query = _db.Projects.AsNoTracking();
         var total = await query.CountAsync();
@@ -478,18 +481,28 @@ public class ProjectsController : ControllerBase
                                .Skip((page - 1) * pageSize)
                                .Take(pageSize)
                                .ToListAsync();
-        return Ok(new { items, page, pageSize, total });
+        return Ok(new PagedList<Project>(items, page, pageSize, total));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] Project input)
+    public async Task<IActionResult> Create([FromBody] ProjectCreateDto dto)
     {
-        input.Id = Guid.NewGuid();
-        _db.Projects.Add(input);
+        var project = new Project
+        {
+            Id = Guid.NewGuid(),
+            Code = dto.Code,
+            Name = dto.Name,
+            Description = dto.Description
+            // TenantId, SaveChangesAsync'teki guard tarafından otomatik olarak atanacaktır.
+        };
+        _db.Projects.Add(project);
         await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(Get), new { id = input.Id }, input);
+        return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
     }
 
+    // API sözleşmesi için DTO (Data Transfer Object)
+    public record ProjectCreateDto(string Code, string Name, string? Description);
+    
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(Guid id)
     {
@@ -550,6 +563,7 @@ SELECT create_hypertable('tenant_metrics', 'timestamp_utc', if_not_exists => TRU
 - `X-Tenant-Id: 11111111-1111-1111-1111-111111111111` header’ı ile `/api/v1/projects` çağrıları tenant izolasyonunu doğrulamalı.
 - Başka bir tenant GUID’i ile oluşturulan kayıtlar listede görünmemeli (global filter).
 - `Project.Code` aynı tenant içinde tekil, farklı tenantlarda çakışabilir.
+- **Çapraz tenant koruması**: Tenant A olarak kimlik doğrulayıp Tenant B'ye ait bir projenin ID'si ile güncelleme/silme denemesi yapıldığında işlemin bir `InvalidOperationException` ile (veya API katmanında 403/404 hatasıyla) engellendiği doğrulanmalı. Bu, `SaveChangesAsync` içindeki guard'ı test eder.
 
 ---
 

@@ -26,7 +26,7 @@ Bu belge **B2 – Local Development Config** iş paketini içerir. Amaç, geliş
     }
   },
   "ConnectionStrings": {
-    "Postgres": "Host=localhost;Port=5432;Database=sbsaas;Username=postgres;Password=postgres"
+    "Postgres": "Host=localhost;Port=5432;Database=sbsaasdb;Username=postgres;Password=postgres"
   },
   "Minio": {
     "Endpoint": "localhost:9000",
@@ -38,7 +38,7 @@ Bu belge **B2 – Local Development Config** iş paketini içerir. Amaç, geliş
   "Jwt": {
     "Issuer": "https://sbsaas.local",
     "Audience": "sbsaas-clients",
-    "SigningKey": "SuperSecretSigningKey_ChangeMe_!@#123"
+    "SigningKey": "ThisIsMyDevelopmentSigningKeyAndItMustBeChangedForProduction!12345"
   }
 }
 ```
@@ -54,7 +54,7 @@ cd src/SBSaaS.API
 # init
  dotnet user-secrets init
 # set secrets
-dotnet user-secrets set "ConnectionStrings:Postgres" "Host=localhost;Port=5432;Database=sbsaas;Username=postgres;Password=postgres"
+dotnet user-secrets set "ConnectionStrings:Postgres" "Host=localhost;Port=5432;Database=sbsaasdb;Username=postgres;Password=postgres"
 dotnet user-secrets set "Minio:AccessKey" "minioadmin"
 dotnet user-secrets set "Minio:SecretKey" "minioadmin"
 dotnet user-secrets set "Jwt:SigningKey" "SuperSecretSigningKey_ChangeMe_!@#123"
@@ -104,7 +104,7 @@ dotnet watch run
 B1 paketindeki compose dosyası ile DB ve MinIO ayağa kalkar.
 
 ```bash
-docker compose up -d db minio
+docker compose up -d postgres minio
 # API'yi local dotnet run ile başlatabilirsiniz
 dotnet run --project src/SBSaaS.API
 ```
@@ -122,4 +122,3 @@ dotnet run --project src/SBSaaS.API
 # 7) Sonraki Paket
 
 - **C1 – Razor i18n**: WebApp tarafında çok dilli UI ve formatlama desteği.
-

@@ -66,7 +66,7 @@ npx openapi-to-postmanv2 -s contracts/openapi.yaml -o docs/postman/collection.js
   "name": "SBSaaS Mock",
   "values": [
     { "key": "baseUrl", "value": "http://localhost:4010", "type": "text" },
-    { "key": "tenantId", "value": "11111111-1111-1111-1111-111111111111", "type": "text" },
+    { "key": "tenantId", "value": "00000000-0000-0000-0000-000000000001", "type": "text" },
     { "key": "accessToken", "value": "{{pm.environment.jwt}}", "type": "text" }
   ]
 }

@@ -592,13 +592,13 @@
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\SBSaaS.WebApp.styles.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"3vhsiwfvd9"},{"Name":"integrity","Value":"sha256-kTTdc5ch45i3vpIc\u002BTt1zgi2DRRoESIEI2wrok5NMpA="},{"Name":"label","Value":"SBSaaS.WebApp.styles.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"4491"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022kTTdc5ch45i3vpIc\u002BTt1zgi2DRRoESIEI2wrok5NMpA=\u0022"},{"Name":"Last-Modified","Value":"Mon, 18 Aug 2025 11:19:24 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"4491"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022kTTdc5ch45i3vpIc\u002BTt1zgi2DRRoESIEI2wrok5NMpA=\u0022"},{"Name":"Last-Modified","Value":"Tue, 19 Aug 2025 07:54:08 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="SBSaaS.WebApp.styles.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\SBSaaS.WebApp.styles.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-kTTdc5ch45i3vpIc\u002BTt1zgi2DRRoESIEI2wrok5NMpA="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"4491"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022kTTdc5ch45i3vpIc\u002BTt1zgi2DRRoESIEI2wrok5NMpA=\u0022"},{"Name":"Last-Modified","Value":"Mon, 18 Aug 2025 11:19:24 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"4491"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022kTTdc5ch45i3vpIc\u002BTt1zgi2DRRoESIEI2wrok5NMpA=\u0022"},{"Name":"Last-Modified","Value":"Tue, 19 Aug 2025 07:54:08 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_framework/blazor.webassembly.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\_framework\blazor.webassembly.js'))</AssetFile>

@@ -499,7 +499,7 @@ public class Subscription
 ```json
 {
   "ConnectionStrings": {
-    "Postgres": "Host=localhost;Port=5432;Database=sbsass;Username=postgres;Password=postgres;"
+    "Postgres": "Host=localhost;Port=5432;Database=sbsaasdb;Username=postgres;Password=postgres;"
   },
   "Minio": {
     "Endpoint": "localhost:9000",

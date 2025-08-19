@@ -82,10 +82,16 @@ public class XTenantHandler : DelegatingHandler
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var tid = _sel.GetActiveTenant(_http.HttpContext!);
-        if (tid is Guid g)
-            request.Headers.TryAddWithoutValidation("X-Tenant-Id", g.ToString());
-        return base.SendAsync(request, cancellationToken);
+        var tid = _http.HttpContext;
+        if (httpContext is not null)
+        {
+            var tid = _sel.GetActiveTenant(httpContext);
+            if (tid is Guid g)
+            {
+                request.Headers.TryAddWithoutValidation("X-Tenant-Id", g.ToString());
+            }
+        }
+            return base.SendAsync(request, cancellationToken);
     }
 }
 ```

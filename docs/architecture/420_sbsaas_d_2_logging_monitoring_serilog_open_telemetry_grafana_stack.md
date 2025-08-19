@@ -213,7 +213,7 @@ services:
 
   tempo:
     image: grafana/tempo:2.5.0
-    ports: ["3200:3200", "4317:4317", "4318:4318"]
+    ports: ["3200:3200"]
     command: ["-config.file=/etc/tempo.yaml"]
     volumes:
       - ./tempo.yaml:/etc/tempo.yaml:ro
@@ -333,4 +333,3 @@ app.Use(async (ctx, next) =>
 # 11) Sonraki Paket
 
 - **E1 – Faturalama & Planlama Şeması**: Abonelik planları, özellik bayrakları, fiyatlandırma ve ödeme tümlemesi (Stripe/Iyzico opsiyonları).
-

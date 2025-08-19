@@ -43,7 +43,7 @@ public static class DependencyInjection
        
         // Minio.MinioClient'ı DI konteynerine ekleyin.
         // Singleton yaşam süresi ile tüm uygulama boyunca tek bir MinioClient örneği kullanılacaktır.
-        services.AddSingleton<MinioClient>(sp =>
+        services.AddSingleton<IMinioClient>(sp =>
         {
             var config = sp.GetRequiredService<IConfiguration>();
             var endpoint = config.GetValue<string>("Minio:Endpoint");
@@ -62,7 +62,7 @@ public static class DependencyInjection
 
             if (useSsl) minioClient.WithSSL();
             
-            return (MinioClient)minioClient.Build();
+            return minioClient.Build();
         });
         services.AddScoped<IFileStorage, MinioFileStorage>();
 

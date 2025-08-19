@@ -141,6 +141,64 @@ paths:
         '204': { description: No Content }
         '404': { $ref: '#/components/responses/NotFound' }
 
+  # ---------------- PROJECTS ----------------
+  /projects:
+    get:
+      summary: List projects in tenant
+      operationId: listProjects
+      tags: [Projects]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/TenantHeader'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/PagedProjectList' } } } }
+    post:
+      summary: Create project in tenant
+      operationId: createProject
+      tags: [Projects]
+      security: [{ bearerAuth: [] }]
+      parameters: [ { $ref: '#/components/parameters/TenantHeader' } ]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/ProjectCreate' } } }
+      responses:
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Project' } } } }
+
+  /projects/{id}:
+    get:
+      summary: Get project by id
+      operationId: getProjectById
+      tags: [Projects]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/TenantHeader'
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Project' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      summary: Update project
+      operationId: updateProject
+      tags: [Projects]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/TenantHeader'
+        - name: id
+          in: path
+          required: true
+          schema: { type:string, format: uuid }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/ProjectUpdate' } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Project' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+
   # ---------------- USERS ----------------
   /users:
     get:
@@ -386,6 +444,48 @@ paths:
           schema: { type: string }
       responses:
         '204': { description: No Content }
+
+  /files/presign/upload:
+    post:
+      summary: Create presigned PUT url for client-side upload
+      operationId: createPresignedUploadUrl
+      tags: [Files]
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TenantHeader' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PresignUploadRequest' }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/PresignUploadResponse' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  # -------------- PAYMENTS & WEBHOOKS --------------
+  /pay/checkout:
+    post:
+      summary: Start a checkout session
+      operationId: startCheckout
+      tags: [Payments]
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TenantHeader' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StartCheckoutRequest' } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/StartCheckoutResponse' } } } }
+
+  /webhooks/stripe:
+    post:
+      summary: Stripe webhook endpoint
+      operationId: handleStripeWebhook
+      tags: [Webhooks]
+      requestBody:
+        description: Stripe event payload
+        required: true
+        content: { application/json: { schema: { type: object } } }
+      responses:
+        '200': { description: OK }
   # -------------- AUDIT --------------
   /audit/change-log:
     get:
@@ -479,6 +579,10 @@ components:
     NotFound:
       description: Resource not found
       content: { application/json: { schema: { $ref: '#/components/schemas/ProblemDetails' } } }
+    BadRequest:
+      description: Bad Request
+      content: { application/json: { schema: { $ref: '#/components/schemas/ProblemDetails' } } }
+
   schemas:
     ProblemDetails:
       type: object
@@ -563,6 +667,39 @@ components:
         pageSize: { type: integer }
         total: { type: integer }
 
+    # -------- PROJECTS --------
+    Project:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        tenantId: { type:string, format: uuid }
+        code: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        createdUtc: { type: string, format: date-time }
+        updatedUtc: { type: string, format: date-time, nullable: true }
+    ProjectCreate:
+      type: object
+      required: [code, name]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+    ProjectUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        description: { type: string, nullable: true }
+    PagedProjectList:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Project' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+
     # -------- SUBSCRIPTIONS --------
     SubscriptionPlan:
       type: object
@@ -631,6 +768,30 @@ components:
       properties:
         objectName: { type: string }
         bucket: { type: string }
+
+    PresignUploadRequest:
+      type: object
+      required: [fileName, contentType, sizeBytes]
+      properties:
+        fileName: { type: string }
+        contentType: { type: string }
+        sizeBytes: { type: integer, format: int64 }
+    PresignUploadResponse:
+      type: object
+      properties:
+        url: { type: string, format: uri }
+        objectName: { type: string }
+
+    # -------- PAYMENTS --------
+    StartCheckoutRequest:
+      type: object
+      required: [planCode]
+      properties:
+        planCode: { type: string }
+    StartCheckoutResponse:
+      type: object
+      properties:
+        url: { type: string, format: uri }
 
     # -------- AUDIT --------
     AuditLog:

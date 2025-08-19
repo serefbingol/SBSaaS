@@ -85,8 +85,8 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: sbsaas_ci
+          POSTGRES_PASSWORD: postgres # pragma: allowlist secret
+          POSTGRES_DB: sbsaasdb
         ports: [ '5432:5432' ]
         options: >-
           --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
@@ -98,7 +98,7 @@ jobs:
         run: dotnet tool install --global dotnet-ef
       - name: Apply Migrations
         env:
-          ConnectionStrings__Postgres: Host=localhost;Port=5432;Database=sbsaas_ci;Username=postgres;Password=postgres
+          ConnectionStrings__Postgres: Host=localhost;Port=5432;Database=sbsaasdb;Username=postgres;Password=postgres
         run: |
           dotnet ef database update --project src/SBSaaS.Infrastructure --startup-project src/SBSaaS.API
 
@@ -336,4 +336,3 @@ dotnet ef migrations script --idempotent -o artifacts/migrations.sql \
 # 11) Sonraki Paket
 
 - **D2 – Logging & Monitoring**: Serilog + OpenTelemetry; lokalde Grafana/Tempo/Loki; prod’da APM/metrics/log pipeline’ı.
-
