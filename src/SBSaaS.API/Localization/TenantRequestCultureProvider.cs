@@ -5,23 +5,27 @@ using System.Globalization;
 
 namespace SBSaaS.API.Localization;
 
+// Örnek: /src/SBSaaS.API/Localization/TenantRequestCultureProvider.cs dosyasında yapılması gereken değişiklik
 public class TenantRequestCultureProvider : RequestCultureProvider
 {
-    private readonly ITenantContext _tenant;
-    private readonly IConfiguration _cfg;
-
-    public TenantRequestCultureProvider(ITenantContext tenant, IConfiguration cfg)
-    { _tenant = tenant; _cfg = cfg; }
+    // Constructor'daki scoped bağımlılıkları kaldırın.
+    public TenantRequestCultureProvider() { }
 
     public override Task<ProviderCultureResult?> DetermineProviderCultureResult(HttpContext httpContext)
     {
-        // Tenant varsayılanını oku (ileri aşamada DB'den Tenant.Culture'a bakılabilir)
-        var defaultCulture = _cfg["Localization:DefaultCulture"] ?? "tr-TR";
-        if (_tenant.TenantId == Guid.Empty)
-            return Task.FromResult<ProviderCultureResult?>(new ProviderCultureResult(defaultCulture));
+        // Scoped servisleri doğrudan HttpContext üzerinden çözümleyin.
+        var tenantContext = httpContext.RequestServices.GetRequiredService<ITenantContext>();
+        var config = httpContext.RequestServices.GetRequiredService<IConfiguration>();
 
-        // Burada Tenant tablosundan culture/timezone çekilebilir (cache ile).
-        // Şimdilik config fallback kullanıyoruz.
+        var defaultCulture = config["Localization:DefaultCulture"] ?? "tr-TR";
+        if (tenantContext.TenantId == Guid.Empty)
+        {
+            return Task.FromResult<ProviderCultureResult?>(new ProviderCultureResult(defaultCulture));
+        }
+
+        // Gelecekte veritabanından tenant'a özel culture burada okunacak.
+        // var tenantCulture = ...
         return Task.FromResult<ProviderCultureResult?>(new ProviderCultureResult(defaultCulture));
     }
 }
+

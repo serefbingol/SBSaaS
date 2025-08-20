@@ -10,7 +10,9 @@ using SBSaaS.Infrastructure;
 using System.Globalization;
 using System.Threading.RateLimiting;
 using SBSaaS.API.Localization;
-using Microsoft.AspNetCore.Localization.RequestCultureProviders;
+using Microsoft.Extensions.DependencyInjection;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,8 +37,6 @@ builder.Services.AddControllers()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 
-builder.Services.AddScoped<IRequestCultureProvider, TenantRequestCultureProvider>();
-
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var cultures = supported.Select(c => new CultureInfo(c)).ToList();
@@ -44,17 +44,18 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedCultures = cultures;
     options.SupportedUICultures = cultures;
 
-    // Çözüm sırası: Query → Cookie → Header → Tenant
+    // Kültür çözümleme sırası: Query → Cookie → Header → Tenant
     options.RequestCultureProviders = new IRequestCultureProvider[]
     {
         new QueryStringRequestCultureProvider(),
         new CookieRequestCultureProvider(),
         new AcceptLanguageHeaderRequestCultureProvider(),
-        // Tenant en sonda fallback gibi davranır
-        new ServiceRequestCultureProvider { CultureProvider = typeof(TenantRequestCultureProvider) }
+        // Tenant provider en sonda yer alır ve tenant'ın varsayılan kültürü için bir fallback görevi görür.
+        // Bu, TenantRequestCultureProvider'ın scoped bağımlılıklarını (ITenantContext gibi)
+        // DetermineProviderCultureResult metodu içinde HttpContext.RequestServices'ten çözümlemesini gerektirir.
+        new TenantRequestCultureProvider()
     };
 });
-
 
 builder.Services.AddSingleton<IFormatService, FormatService>();
 builder.Services.AddAuthentication(o =>
