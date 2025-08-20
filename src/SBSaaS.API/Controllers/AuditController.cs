@@ -15,7 +15,7 @@ public class AuditController : ControllerBase
     public AuditController(SbsDbContext db) => _db = db;
 
     [HttpGet("change-log")]
-    public async Task<IActionResult> Query([FromQuery] DateTime? from, [FromQuery] DateTime? to,
+    public async Task<IActionResult> Query([FromQuery] DateTimeOffset? from, [FromQuery] DateTimeOffset? to,
                                            [FromQuery] string? table, [FromQuery] string? operation,
                                            [FromQuery] string? userId,
                                            [FromQuery] int page = 1, [FromQuery] int pageSize = 50)
