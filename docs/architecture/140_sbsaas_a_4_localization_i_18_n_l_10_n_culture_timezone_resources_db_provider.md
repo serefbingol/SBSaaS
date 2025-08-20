@@ -32,7 +32,8 @@ Bu belge  **A4 – Localization**  iş paketinin uçtan uca uygulamasını içer
 {
   "Localization": {
     "DefaultCulture": "tr-TR",
-    "SupportedCultures": ["tr-TR", "en-US", "de-DE"]
+    "SupportedCultures": ["tr-TR", "en-US", "de-DE"],
+    "Provider": "Resource"
   }
 }
 ```
@@ -60,8 +61,6 @@ builder.Services.AddControllers()
     .AddViewLocalization()               // Razor için gerekli (C paketinde kullanılacak)
     .AddDataAnnotationsLocalization();    // ModelState/DataAnnotations
 
-builder.Services.AddScoped<TenantRequestCultureProvider>();
-
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var cultures = supported.Select(c => new CultureInfo(c)).ToList();
@@ -70,13 +69,15 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = cultures;
 
     // Çözüm sırası: Query → Cookie → Header → Tenant
+    // TenantRequestCultureProvider, IConfiguration (singleton) dışında bir bağımlılığa sahip olmadığı için
+    // doğrudan burada oluşturulabilir. Scoped servisleri (DbContext, ITenantContext) kendi içinde çözer.
     options.RequestCultureProviders = new IRequestCultureProvider[]
     {
         new QueryStringRequestCultureProvider(),
         new CookieRequestCultureProvider(),
         new AcceptLanguageHeaderRequestCultureProvider(),
         // Tenant en sonda fallback gibi davranır
-        new TenantRequestCultureProvider()
+        new TenantRequestCultureProvider(builder.Configuration)
     };
 });
 
@@ -92,32 +93,45 @@ app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocal
 
 `**src/SBSaaS.API/Localization/TenantRequestCultureProvider.cs**`
 
-```
+```csharp
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Primitives;
 using SBSaaS.Application.Interfaces;
+using SBSaaS.Infrastructure.Persistence;
 using System.Globalization;
 
 namespace SBSaaS.API.Localization;
 
 public class TenantRequestCultureProvider : RequestCultureProvider
 {
-    private readonly ITenantContext _tenant;
     private readonly IConfiguration _cfg;
 
-    public TenantRequestCultureProvider(ITenantContext tenant, IConfiguration cfg)
-    { _tenant = tenant; _cfg = cfg; }
+    public TenantRequestCultureProvider(IConfiguration cfg) => _cfg = cfg;
 
-    public override Task<ProviderCultureResult?> DetermineProviderCultureResult(HttpContext httpContext)
+    public override async Task<ProviderCultureResult?> DetermineProviderCultureResult(HttpContext httpContext)
     {
-        // Tenant varsayılanını oku (ileri aşamada DB'den Tenant.Culture'a bakılabilir)
-        var defaultCulture = _cfg["Localization:DefaultCulture"] ?? "tr-TR";
-        if (_tenant.TenantId == Guid.Empty)
-            return Task.FromResult<ProviderCultureResult?>(new ProviderCultureResult(defaultCulture));
+        // Scoped servisleri HttpContext üzerinden çözümle. Bu, provider'ın kendisinin
+        // singleton ömrüne sahip olmasına rağmen istek bazlı servislere erişmesini sağlar.
+        var tenantContext = httpContext.RequestServices.GetService<ITenantContext>();
+        var dbContext = httpContext.RequestServices.GetService<SbsDbContext>();
 
-        // Burada Tenant tablosundan culture/timezone çekilebilir (cache ile).
-        // Şimdilik config fallback kullanıyoruz.
-        return Task.FromResult<ProviderCultureResult?>(new ProviderCultureResult(defaultCulture));
+        if (tenantContext is null || dbContext is null)
+        {
+            // Servisler çözümlenemezse, varsayılan kültürü döndür.
+            return new ProviderCultureResult(_cfg["Localization:DefaultCulture"] ?? "tr-TR");
+        }
+
+        // Tenant bağlamı yoksa veya TenantId boşsa, varsayılan kültürü kullan.
+        if (tenantContext.TenantId == Guid.Empty)
+        {
+            return new ProviderCultureResult(_cfg["Localization:DefaultCulture"] ?? "tr-TR");
+        }
+
+        // Tenant'ın UI kültür bilgisini veritabanından al. Performans için cache eklenebilir.
+        var tenant = await dbContext.Tenants.FindAsync(new object[] { tenantContext.TenantId }, httpContext.RequestAborted);
+        var culture = tenant?.UiCulture;
+
+        // Eğer Tenant bulunamazsa veya UiCulture tanımlı değilse, config'deki varsayılanı kullan.
+        return new ProviderCultureResult(culture ?? _cfg["Localization:DefaultCulture"] ?? "tr-TR");
     }
 }
 ```
@@ -178,12 +192,10 @@ FluentValidation kullanıyorsanız kültür tabanlı mesajlar için  `ValidatorO
 ----------
 
 ## 7) Zaman Dilimi (TimeZone) ve Biçimlendirme Yardımcıları
+UTC saklama, kullanıcı/tenant zaman dilimine göre sunumda dönüştürme önerilir.
 
-UTC saklama, kullanıcı/tenant zaman dilimine göre  **sunumda**  dönüştürme önerilir.
+src/SBSaaS.API/Localization/FormatService.cs
 
-`**src/SBSaaS.API/Localization/FormatService.cs**`
-
-```
 using System.Globalization;
 
 namespace SBSaaS.API.Localization;
@@ -219,15 +231,9 @@ public class FormatService : IFormatService
         return value.ToString("N", ci);
     }
 }
-```
+DI kaydı
 
-**DI kaydı**
-
-```
 builder.Services.AddSingleton<IFormatService, FormatService>();
-```
-
-----------
 
 ## 8) DB Tabanlı Localizer (opsiyonel)
 

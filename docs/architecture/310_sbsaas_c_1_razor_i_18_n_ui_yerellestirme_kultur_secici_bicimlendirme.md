@@ -217,10 +217,10 @@ Link üretiminde `asp-route-culture` kullanın. Cookie ve query ile birlikte ça
 
 # 9) Biçimlendirme Yardımcıları
 
-A4’teki `IFormatService`’i WebApp’e referans ederek UI’da kullanabilirsiniz:
+WebApp projesinin kendi içinde tanımlanan `IFormatService`'i UI'da kullanabilirsiniz:
 
 ```razor
-@inject SBSaaS.API.Localization.IFormatService F
+@inject SBSaaS.WebApp.Services.IFormatService F
 <span>@F.Currency(199.99m, "TRY")</span>
 ```
 
@@ -240,4 +240,3 @@ A4’teki `IFormatService`’i WebApp’e referans ederek UI’da kullanabilirsi
 # 11) Sonraki Paket
 
 - **C2 – OAuth Login (Google/Microsoft)**: Cookie auth + dış sağlayıcı butonları, callback akışı; WebApp’in API ile token alışverişi veya cookie oturum modeli.
-

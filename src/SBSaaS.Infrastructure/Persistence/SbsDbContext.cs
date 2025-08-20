@@ -1,12 +1,13 @@
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SBSaaS.Domain.Entities;
 using SBSaaS.Application.Interfaces;
 using SBSaaS.Domain.Common;
-using SBSaaS.Domain.Entities.Billing;
-using SBSaaS.Domain.Entities.Projects;
+using SBSaaS.Domain.Entities;
 using SBSaaS.Domain.Entities.Auth;
+using SBSaaS.Domain.Entities.Billing;
 using SBSaaS.Domain.Entities.Invitations;
+using SBSaaS.Domain.Entities.Projects;
 using SBSaaS.Infrastructure.Audit;
 using SBSaaS.Infrastructure.Localization;
 
@@ -18,7 +19,7 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
 
     public SbsDbContext(DbContextOptions<SbsDbContext> options, ITenantContext tenant) : base(options)
         => _tenant = tenant;
-    
+
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
@@ -41,11 +42,12 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
         b.Entity<ApplicationUser>(e =>
         {
             e.Property(u => u.TenantId).IsRequired();
-            // Bu index, belirli bir kiracı içindeki kullanıcıları e-posta ile aramayı destekler.
-            // İş mantığı izin veriyorsa, aynı e-postanın farklı kiracılar için var olmasına izin vermek amacıyla
-            // bu index benzersiz (unique) değildir. Kiracı başına benzersiz e-posta için,
-            // {TenantId, NormalizedEmail} üzerinde birleşik bir benzersiz index (composite unique index) oluşturulmalıdır.
-            e.HasIndex(u => new { u.TenantId, u.Email });
+
+            // In a multi-tenant structure, an email should be usable in multiple tenants.
+            // However, the email must be unique within the same tenant.
+            // ASP.NET Core Identity uses the `NormalizedEmail` field for email comparisons.
+            // Therefore, we create a composite unique index on `TenantId` and `NormalizedEmail` to ensure uniqueness.
+            e.HasIndex(u => new { u.TenantId, u.NormalizedEmail }).IsUnique();
         });
 
         b.Entity<ChangeLog>(e => // A2 - Audit Logging
@@ -83,16 +85,19 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
             b.HasKey(x => x.Id);
             b.HasIndex(x => new { x.Key, x.Culture }).IsUnique();
         });
-        
-        // Global query filter şablonu – ITenantScoped olan tüm entity’lere uygula
+
+        // Global query filter to apply tenancy rules.
         foreach (var entityType in b.Model.GetEntityTypes())
         {
             if (typeof(ITenantScoped).IsAssignableFrom(entityType.ClrType))
             {
-                var method = typeof(SbsDbContext)
-                    .GetMethod(nameof(SetTenantFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
-                method.MakeGenericMethod(entityType.ClrType)
-                      .Invoke(null, new object[] { this, b });
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var property = Expression.Property(parameter, nameof(ITenantScoped.TenantId));
+                var tenantId = Expression.Property(Expression.Field(Expression.Constant(this), "_tenant"), "TenantId");
+                var body = Expression.Equal(property, tenantId);
+                var lambda = Expression.Lambda(body, parameter);
+
+                b.Entity(entityType.ClrType).HasQueryFilter(lambda);
             }
         }
     }
@@ -103,8 +108,14 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
         return base.SaveChangesAsync(ct);
     }
 
+    public override int SaveChanges()
+    {
+        ApplyEntityRules();
+        return base.SaveChanges();
+    }
+
     /// <summary>
-    /// Kayıt öncesi varlıklar üzerinde denetim (auditing) ve çok kiracılı (multi-tenancy) kurallarını uygular.
+    /// Applies auditing and multi-tenancy rules before saving entities.
     /// </summary>
     private void ApplyEntityRules()
     {
@@ -154,13 +165,13 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
 
     private static void HandleAddedTenantScopedEntity(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry, ITenantScoped scopedEntity, Guid currentTenantId)
     {
-        // Eğer TenantId manuel olarak (örn: seeder tarafından) atanmamışsa, bağlamdaki tenant'ı ata.
+        // If TenantId has not been assigned manually (e.g., by a seeder), assign the tenant from the context.
         if (scopedEntity.TenantId == Guid.Empty)
         {
             scopedEntity.TenantId = currentTenantId;
         }
 
-        // Atama denemesinden sonra hala TenantId boş ise bu bir hatadır.
+        // If TenantId is still empty after the assignment attempt, it's an error.
         if (scopedEntity.TenantId == Guid.Empty)
         {
             throw new InvalidOperationException($"Cannot save entity of type {entry.Entity.GetType().Name} without a TenantId. A valid tenant context is required.");
@@ -169,14 +180,14 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
 
     private static void HandleModifiedTenantScopedEntity(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry, Guid currentTenantId)
     {
-        // Orijinal TenantId'yi veritabanından geldiği haliyle kontrol et.
+        // Check the original TenantId as it came from the database.
         var originalTenantId = entry.OriginalValues.GetValue<Guid>(nameof(ITenantScoped.TenantId));
         if (!Equals(originalTenantId, currentTenantId))
         {
             throw new InvalidOperationException($"Cross-tenant update attempt detected. Entity belongs to tenant {originalTenantId}.");
         }
 
-        // TenantId alanının değiştirilmesini engelle. Bu, bir verinin başka bir tenanta taşınmasını önler.
+        // Prevent changing the TenantId field. This prevents moving data to another tenant.
         if (entry.Property(nameof(ITenantScoped.TenantId)).IsModified)
         {
             throw new InvalidOperationException("Changing the TenantId of an existing entity is not allowed.");
@@ -185,17 +196,11 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
 
     private static void HandleDeletedTenantScopedEntity(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry, Guid currentTenantId)
     {
-        // Silme işleminde de verinin orijinal sahibinin mevcut tenant olduğunu doğrula.
+        // Also verify that the original owner of the data is the current tenant during deletion.
         var tenantIdForDelete = entry.OriginalValues.GetValue<Guid>(nameof(ITenantScoped.TenantId));
         if (!Equals(tenantIdForDelete, currentTenantId))
         {
             throw new InvalidOperationException($"Cross-tenant delete attempt detected. Entity belongs to tenant {tenantIdForDelete}.");
         }
-    }
-
-    private static void SetTenantFilter<TEntity>(SbsDbContext ctx, ModelBuilder b) where TEntity : class
-    {
-        b.Entity<TEntity>().HasQueryFilter(e => !typeof(ITenantScoped).IsAssignableFrom(typeof(TEntity)) ||
-            ((ITenantScoped)e!).TenantId == ctx._tenant.TenantId);
     }
 }

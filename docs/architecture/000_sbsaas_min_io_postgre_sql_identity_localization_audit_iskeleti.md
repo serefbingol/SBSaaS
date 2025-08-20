@@ -276,12 +276,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
-        services.AddHttpContextAccessor(); // Interceptor'da UserId almak için gerekli
+        services.AddHttpContextAccessor();
         services.AddScoped<AuditSaveChangesInterceptor>();
-        services.AddDbContext<SbsDbContext>((sp, opt) =>
+        // DbContextFactory, hem singleton servislerin (DbStringLocalizerFactory gibi) DbContext'e erişmesini sağlar
+        // hem de normal istekler için scoped DbContext'i DI konteynerine kaydeder.
+        services.AddDbContextFactory<SbsDbContext>((sp, opt) =>
         {
             opt.UseNpgsql(config.GetConnectionString("Postgres"));
-            opt.EnableSensitiveDataLogging(false);
             opt.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
         });
 

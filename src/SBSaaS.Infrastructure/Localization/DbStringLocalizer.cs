@@ -1,30 +1,42 @@
-using Microsoft.Extensions.Localization;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Localization;
 using SBSaaS.Infrastructure.Persistence;
+using System.Globalization;
 
 namespace SBSaaS.Infrastructure.Localization;
 
 public class DbStringLocalizer : IStringLocalizer
 {
-    private readonly SbsDbContext _db;
+    private readonly IDbContextFactory<SbsDbContext> _dbFactory;
+    private readonly IMemoryCache _cache;
     private readonly string _baseName;
 
-    public DbStringLocalizer(SbsDbContext db, string baseName)
-    { _db = db; _baseName = baseName; }
+    public DbStringLocalizer(IDbContextFactory<SbsDbContext> dbFactory, IMemoryCache cache, string baseName)
+    {
+        _dbFactory = dbFactory;
+        _cache = cache;
+        _baseName = baseName;
+    }
 
     public LocalizedString this[string name]
     {
         get
         {
             var culture = Thread.CurrentThread.CurrentUICulture.Name;
-            var value = _db.Set<Translation>().AsNoTracking()
-                .Where(x => x.Key == name && x.Culture == culture)
-                .Select(x => x.Value)
-                .FirstOrDefault();
-            var notFound = value is null;
-            value ??= name; // fallback
-            return new LocalizedString(name, value, notFound);
+            var cacheKey = $"loc_{culture}_{name}";
+
+            var value = _cache.GetOrCreate(cacheKey, entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromMinutes(60);
+                using var db = _dbFactory.CreateDbContext();
+                return db.Set<Translation>().AsNoTracking()
+                    .Where(x => x.Key == name && x.Culture == culture)
+                    .Select(x => x.Value)
+                    .FirstOrDefault();
+            });
+
+            return new LocalizedString(name, value ?? name, value is null);
         }
     }
 

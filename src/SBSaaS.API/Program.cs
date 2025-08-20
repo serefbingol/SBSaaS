@@ -14,6 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 
 
+using SBSaaS.API.Services;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Add services to the container.
@@ -21,6 +24,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 // Tenant Context – basit header temelli örnek (X-Tenant-Id)
 builder.Services.AddScoped<ITenantContext, HeaderTenantContext>();
+builder.Services.AddScoped<IUserContext, HttpContextUserContext>();
 
 // JwtOptions
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
@@ -53,11 +57,13 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         // Tenant provider en sonda yer alır ve tenant'ın varsayılan kültürü için bir fallback görevi görür.
         // Bu, TenantRequestCultureProvider'ın scoped bağımlılıklarını (ITenantContext gibi)
         // DetermineProviderCultureResult metodu içinde HttpContext.RequestServices'ten çözümlemesini gerektirir.
-        new TenantRequestCultureProvider()
+        new TenantRequestCultureProvider(builder.Configuration)
     };
 });
 
 builder.Services.AddSingleton<IFormatService, FormatService>();
+
+
 builder.Services.AddAuthentication(o =>
 {
     o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

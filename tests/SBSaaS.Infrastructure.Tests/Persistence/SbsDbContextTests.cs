@@ -36,7 +36,7 @@ public class SbsDbContextTests
         // Arrange
         _mockTenantContext.Setup(t => t.TenantId).Returns(_tenantA_Id);
         var dbContext = CreateDbContext();
-        var project = new Project { Id = Guid.NewGuid(), Name = "Test Project" };
+                                    var project = new Project { Id = Guid.NewGuid(), Name = "Test Project", Code = "TESTCODE" };
 
         // Act
         dbContext.Projects.Add(project);

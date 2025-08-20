@@ -1,31 +1,40 @@
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Primitives;
 using SBSaaS.Application.Interfaces;
+using SBSaaS.Infrastructure.Persistence;
 using System.Globalization;
 
 namespace SBSaaS.API.Localization;
 
-// Örnek: /src/SBSaaS.API/Localization/TenantRequestCultureProvider.cs dosyasında yapılması gereken değişiklik
 public class TenantRequestCultureProvider : RequestCultureProvider
 {
-    // Constructor'daki scoped bağımlılıkları kaldırın.
-    public TenantRequestCultureProvider() { }
+    private readonly IConfiguration _cfg;
 
-    public override Task<ProviderCultureResult?> DetermineProviderCultureResult(HttpContext httpContext)
+    public TenantRequestCultureProvider(IConfiguration cfg) => _cfg = cfg;
+
+    public override async Task<ProviderCultureResult?> DetermineProviderCultureResult(HttpContext httpContext)
     {
-        // Scoped servisleri doğrudan HttpContext üzerinden çözümleyin.
-        var tenantContext = httpContext.RequestServices.GetRequiredService<ITenantContext>();
-        var config = httpContext.RequestServices.GetRequiredService<IConfiguration>();
+        // Scoped servisleri HttpContext üzerinden çözümle. Bu, provider'ın kendisinin
+        // singleton ömrüne sahip olmasına rağmen istek bazlı servislere erişmesini sağlar.
+        var tenantContext = httpContext.RequestServices.GetService<ITenantContext>();
+        var dbContext = httpContext.RequestServices.GetService<SbsDbContext>();
 
-        var defaultCulture = config["Localization:DefaultCulture"] ?? "tr-TR";
-        if (tenantContext.TenantId == Guid.Empty)
+        if (tenantContext is null || dbContext is null)
         {
-            return Task.FromResult<ProviderCultureResult?>(new ProviderCultureResult(defaultCulture));
+            // Servisler çözümlenemezse, varsayılan kültürü döndür.
+            return new ProviderCultureResult(_cfg["Localization:DefaultCulture"] ?? "tr-TR");
         }
 
-        // Gelecekte veritabanından tenant'a özel culture burada okunacak.
-        // var tenantCulture = ...
-        return Task.FromResult<ProviderCultureResult?>(new ProviderCultureResult(defaultCulture));
+        // Tenant bağlamı yoksa veya TenantId boşsa, varsayılan kültürü kullan.
+        if (tenantContext.TenantId == Guid.Empty)
+        {
+            return new ProviderCultureResult(_cfg["Localization:DefaultCulture"] ?? "tr-TR");
+        }
+
+        // Tenant'ın UI kültür bilgisini veritabanından al. Performans için cache eklenebilir.
+        var tenant = await dbContext.Tenants.FindAsync(new object[] { tenantContext.TenantId }, httpContext.RequestAborted);
+        var culture = tenant?.UiCulture;
+
+        // Eğer Tenant bulunamazsa veya UiCulture tanımlı değilse, config'deki varsayılanı kullan.
+        return new ProviderCultureResult(culture ?? _cfg["Localization:DefaultCulture"] ?? "tr-TR");
     }
 }
-

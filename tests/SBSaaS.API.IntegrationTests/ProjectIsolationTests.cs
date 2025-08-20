@@ -27,7 +27,7 @@ public class ProjectIsolationTests : IClassFixture<WebApplicationFactory<Program
         _factory = factory;
     }
 
-    private async Task SeedDataForTenantsAsync()
+    private async Task<List<Project>> SeedDataForTenantsAsync()
     {
         using var scope = _factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<SbsDbContext>();
@@ -35,19 +35,22 @@ public class ProjectIsolationTests : IClassFixture<WebApplicationFactory<Program
         // Önceki testlerden kalan verileri temizle
         await dbContext.Projects.ExecuteDeleteAsync();
 
-        dbContext.Projects.AddRange(
+        var projectsToSeed = new List<Project>
+        {
             new Project { Id = Guid.NewGuid(), Name = "Project A1", TenantId = _tenantA_Id, Code = "A1" },
             new Project { Id = Guid.NewGuid(), Name = "Project A2", TenantId = _tenantA_Id, Code = "A2" },
             new Project { Id = Guid.NewGuid(), Name = "Project B1", TenantId = _tenantB_Id, Code = "B1" }
-        );
+        };
+        dbContext.Projects.AddRange(projectsToSeed);
         await dbContext.SaveChangesAsync();
+        return projectsToSeed;
     }
 
     [Fact]
     public async Task GetProjects_WhenCalledWithTenantHeader_ShouldOnlyReturnOwnProjects()
     {
         // Arrange
-        await SeedDataForTenantsAsync();
+        var seededProjects = await SeedDataForTenantsAsync();
         var client = _factory.CreateClient();
         client.DefaultRequestHeaders.Add("X-Tenant-Id", _tenantA_Id.ToString());
 
@@ -65,16 +68,11 @@ public class ProjectIsolationTests : IClassFixture<WebApplicationFactory<Program
     public async Task GetProjectById_WhenCalledForAnotherTenant_ShouldReturnNotFound()
     {
         // Arrange
-        await SeedDataForTenantsAsync();
+        var seededProjects = await SeedDataForTenantsAsync();
         var client = _factory.CreateClient();
 
         // Tenant B'ye ait projenin ID'sini al
-        Guid projectB_Id;
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<SbsDbContext>();
-            projectB_Id = (await db.Projects.FirstAsync(p => p.TenantId == _tenantB_Id)).Id;
-        }
+        var projectB_Id = seededProjects.First(p => p.TenantId == _tenantB_Id).Id;
 
         // Tenant A olarak istek yap
         client.DefaultRequestHeaders.Add("X-Tenant-Id", _tenantA_Id.ToString());

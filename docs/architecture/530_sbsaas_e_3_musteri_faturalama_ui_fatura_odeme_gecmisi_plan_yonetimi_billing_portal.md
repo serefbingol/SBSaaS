@@ -231,7 +231,7 @@ public class BillingController : Controller
 
 # 6) i18n ve Biçimlendirme
 - C1/C4 ile uyumlu `IViewLocalizer` anahtarları: `Plans`, `CurrentPlan`, `BuyOrUpgrade`, `Invoices`, `InvoiceDetails`, `Payments`.
-- Para birimi/tarih biçimlendirmesi için C1’deki kültür ve A4’teki `IFormatService`’i kullanın.
+- Para birimi/tarih biçimlendirmesi için C1’deki kültür ve WebApp projesinde tanımlanan `IFormatService`’i kullanın (bkz. C1, bölüm 9).
 
 ---
 
@@ -245,4 +245,3 @@ public class BillingController : Controller
 
 # 8) Sonraki Paket
 - **E4 – İç Yönetim (Admin) UI**: Plan/özellik CRUD, manuel fatura, iade işlemleri, mutabakat raporları; RBAC ile korumalı yönetim paneli.
-
