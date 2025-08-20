@@ -64,6 +64,28 @@ services:
       timeout: 20s
       retries: 3
 
+  clamav:
+    image: clamav/clamav:latest
+    ports:
+      - "3310:3310" # ClamAV daemon port
+    volumes:
+      - clamav_data:/var/lib/clamav
+    healthcheck:
+      test: ["CMD", "clamdscan", "--ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  freshclam:
+    image: clamav/clamav:latest
+    command: freshclam --checks=12 --daemon-address=clamav --daemon-port=3310
+    volumes:
+      - clamav_data:/var/lib/clamav
+    depends_on:
+      clamav:
+        condition: service_healthy
+    restart: on-failure
+
   api:
     build:
       context: .
@@ -83,9 +105,32 @@ services:
       minio:
         condition: service_healthy
 
+  worker:
+    build:
+      context: .
+      dockerfile: ./docker/worker.Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: "Host=postgres;Database=sbsaasdb;Username=sbsaas;Password=sbsaas123"
+      Minio__Endpoint: "minio:9000"
+      Minio__AccessKey: "minioadmin"
+      Minio__SecretKey: "minioadmin"
+      Minio__Bucket: "sbsaas" # Ensure this matches minio-init.sh
+      ClamAV__Host: "clamav"
+      ClamAV__Port: "3310"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      clamav:
+        condition: service_healthy
+    restart: on-failure
+
 volumes:
   postgres_data:
   minio_data:
+  clamav_data: # New volume for ClamAV definitions
 ```
 
 ---

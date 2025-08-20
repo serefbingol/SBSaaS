@@ -1,21 +1,31 @@
 using Microsoft.Extensions.Configuration;
 using SBSaaS.Application.Interfaces;
+using System;
+using System.Linq;
 
 namespace SBSaaS.Infrastructure.Storage;
 
 public class UploadPolicy : IUploadPolicy
 {
-    private readonly IConfiguration _config;
+    private readonly IConfiguration _cfg;
+    public UploadPolicy(IConfiguration cfg) => _cfg = cfg;
 
-    public UploadPolicy(IConfiguration config)
+    public bool IsAllowed(string contentType, long sizeBytes)
     {
-        _config = config;
+        var allowed = _cfg.GetSection("Minio:Policy:AllowedMime").Get<string[]>() ?? Array.Empty<string>();
+        var maxBytes = (_cfg.GetValue<long?>("Minio:Policy:MaxSizeMB") ?? 25) * 1024 * 1024;
+
+        if (string.IsNullOrEmpty(contentType) || sizeBytes <= 0)
+            return false;
+
+        return allowed.Contains(contentType, StringComparer.OrdinalIgnoreCase) && sizeBytes <= maxBytes;
     }
 
-    public long MaxFileSize => long.TryParse(_config["UploadPolicy:MaxFileSizeMb"], out var mb) ? mb * 1024 * 1024 : 10 * 1024 * 1024;
+    public string BuildTenantPrefix(Guid tenantId, DateTimeOffset now)
+    {
+        if (tenantId == Guid.Empty)
+            throw new ArgumentException("TenantId cannot be empty.", nameof(tenantId));
 
-    public TimeSpan Expiration => TimeSpan.FromMinutes(int.TryParse(_config["UploadPolicy:ExpirationMinutes"], out var min) ? min : 5);
-
-    public IReadOnlySet<string> AllowedMimeTypes =>
-        new HashSet<string>(_config.GetSection("UploadPolicy:AllowedMimeTypes").Get<string[]>() ?? new[] { "image/jpeg", "image/png", "application/pdf" });
+        return $"tenants/{tenantId:D}/{now:yyyy/MM}/";
+    }
 }

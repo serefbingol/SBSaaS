@@ -27,7 +27,23 @@ Bu belge **A5 – MinIO Entegrasyonu** iş paketinin uçtan uca uygulamasını i
 
 **Saklanan Metadata:**
 
-- `x-amz-meta-originalname`, `x-amz-meta-contenttype`, `x-amz-meta-uploadedby` vb.
+MinIO (S3) nesneleriyle birlikte saklanacak metadata, uygulamanın işlevselliği, güvenliği ve denetlenebilirliği için kritik öneme sahiptir. Aşağıda zorunlu, önerilen ve senaryoya özel metadata alanları listelenmiştir.
+
+***Zorunlu Metadata (Uygulamanın Temeli İçin):***
+- **`x-amz-meta-tenant-id`**: Nesnenin hangi kiracıya ait olduğunu belirtir. Çok kiracılı mimarinin temel taşıdır.
+- **`x-amz-meta-uploaded-by-user-id`**: Dosyayı yükleyen kullanıcının sistemdeki benzersiz kimliğidir. Denetim ve sorumluluk takibi için zorunludur.
+- **`x-amz-meta-document-type`**: Dosyanın türünü belirtir (örneğin, "sözleşme", "profil-resmi", "fatura"). Kategorizasyon ve arama için önemlidir.
+
+***Önerilen Metadata (İşlevselliği ve UX'i Artıran):***
+- **`x-amz-meta-original-filename`**: Kullanıcının yüklediği dosyanın orijinal adını saklar. İndirme sırasında doğru dosya adını sunmak kullanıcı deneyimi için önemlidir.
+- **`x-amz-meta-upload-date`**: Dosyanın yüklendiği zamanı (ISO 8601 formatında) belirtir. Raporlama ve yaşam döngüsü yönetimi için faydalıdır.
+- **`x-amz-meta-access-control`**: Belgeye kimlerin erişebileceğini belirten bir rol veya izin listesi içerebilir. Daha granüler güvenlik için kullanılabilir.
+
+***Opsiyonel & Senaryoya Özel Metadata:***
+- **`x-amz-meta-employee-id`**: Eğer uygulama İK gibi bir alana yönelikse, belgenin ilgili olduğu çalışan kimliğini saklar.
+- **`x-amz-meta-department-id`**: Belgenin ait olduğu departmanı belirtir.
+- **`x-amz-meta-approval-status`**: Bir iş akışı içindeki belgenin onay durumunu ("onaylandi", "reddedildi") tutar.
+- **`x-amz-meta-tags`**: Virgülle ayrılmış etiketler (örn. `rapor,2024,finans`) ile nesneleri daha esnek şekilde sınıflandırmak için kullanılır.
 
 ---
 
@@ -49,7 +65,27 @@ Bu belge **A5 – MinIO Entegrasyonu** iş paketinin uçtan uca uygulamasını i
     },
     "Policy": {
       "MaxSizeMB": 25,
-      "AllowedMime": ["image/png","image/jpeg","application/pdf"]
+      "AllowedMime": [
+        "image/png",
+        "image/jpeg",
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.oasis.opendocument.text",
+        "application/vnd.oasis.opendocument.spreadsheet",
+        "application/rtf",
+        "application/zip",
+        "application/x-rar-compressed",
+        "text/plain",
+        "text/csv",
+        "audio/mpeg",
+        "audio/wav",
+        "video/mp4"
+      ]
     }
   }
 }
@@ -91,7 +127,7 @@ public interface IUploadPolicy
 
 # 4) Infrastructure – MinIO servisleri
 
-**Signer implementasyonu**\
+**Signer implementasyonu**
 ``
 
 ```csharp
@@ -124,7 +160,7 @@ public class MinioObjectSigner : IObjectSigner
 }
 ```
 
-**Upload Policy**\
+**Upload Policy**
 ``
 
 ```csharp
@@ -149,7 +185,7 @@ public class UploadPolicy : IUploadPolicy
 }
 ```
 
-**DI Kayıtları**\
+**DI Kayıtları**
 ``
 
 ```csharp
@@ -167,7 +203,7 @@ services.AddScoped<IUploadPolicy, UploadPolicy>();
 
 # 5) API – Presigned URL uçları
 
-**DTO’lar**\
+**DTO’lar**
 ``
 
 ```csharp
@@ -177,7 +213,7 @@ public record PresignGetRequest(string ObjectName);
 public record PresignGetResponse(string Url, int ExpiresSeconds);
 ```
 
-**Controller**\
+**Controller**
 ``
 
 ```csharp
@@ -233,7 +269,7 @@ public class FilesPresignController : ControllerBase
 
 # 6) Doğrudan Upload (stream) uçları – (önceden ekliydi)
 
-İsteyen istemciler presigned yerine API üzerinden de yükleyebilir. (Bkz. `FilesController.Upload`)\
+İsteyen istemciler presigned yerine API üzerinden de yükleyebilir. (Bkz. `FilesController.Upload`)
 **Ek validasyon** ekleyin:
 
 ```csharp
@@ -253,7 +289,7 @@ mc anonymous set download local/sbs-objects  # sadece GET anonim istenecekse
 mc admin config set local/ api cors="*"     # geliştirme amaçlı; üretimde domain kısıtlayın
 ```
 
-> Üretimde: sadece belirli origin’lere izin verin, `PUT`/`GET` yöntemlerini ve gerekli başlıkları (Content-Type, x-amz-\*) ekleyin.
+> Üretimde: sadece belirli origin’lere izin verin, `PUT`/`GET` yöntemlerini ve gerekli başlıkları (Content-Type, x-amz-*)" ekleyin.
 
 **Server-Side Encryption (opsiyonel)**: MinIO KMS ile SSE-S3/SSE-KMS kullanabilirsiniz.
 
@@ -267,6 +303,7 @@ mc admin config set local/ api cors="*"     # geliştirme amaçlı; üretimde do
 
 1. **API upload** yolunda dosyayı geçici dizine indir → tarat → temizse MinIO’ya yaz.
 2. **Event-driven**: MinIO bucket notification (webhook/kuyruk) ile yeni nesne → işleyici servis (Hangfire/Worker) ClamAV ile tarar; temiz değilse siler ve audit’e işler.
+Bu projede Event-driven seçilmiştir.
 
 ---
 

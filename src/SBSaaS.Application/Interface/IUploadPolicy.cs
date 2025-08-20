@@ -2,7 +2,6 @@ namespace SBSaaS.Application.Interfaces;
 
 public interface IUploadPolicy
 {
-    long MaxFileSize { get; }
-    TimeSpan Expiration { get; }
-    IReadOnlySet<string> AllowedMimeTypes { get; }
+    bool IsAllowed(string contentType, long sizeBytes);
+    string BuildTenantPrefix(Guid tenantId, DateTimeOffset now);
 }
