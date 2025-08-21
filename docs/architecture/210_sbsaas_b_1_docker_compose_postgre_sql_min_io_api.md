@@ -208,4 +208,3 @@ http://localhost:5000/swagger
 
 # 8) Sonraki Paket
 - **B2 – Local Development Config**: appsettings profilleri, user-secrets yönetimi, hot reload desteği.
-

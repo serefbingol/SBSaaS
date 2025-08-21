@@ -28,7 +28,8 @@ Bunlar sistemin kullanıcıya sunduğu doğrudan işlevler.
         
 -   **Dosya Yönetimi**
     
-    -   MinIO ile entegre dosya depolama (Image, PDF, vb.).
+    -   MinIO ile entegre güvenli dosya depolama (Resim, PDF, vb.).
+    -   Yüklenen dosyalar için ClamAV entegrasyonu ile otomatik virüs taraması.
         
 -   **Audit Logging**
     

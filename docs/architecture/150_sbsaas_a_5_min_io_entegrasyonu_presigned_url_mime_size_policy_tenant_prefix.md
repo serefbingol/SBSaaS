@@ -299,11 +299,15 @@ mc admin config set local/ api cors="*"     # geliştirme amaçlı; üretimde do
 
 # 8) Antivirüs (Opsiyonel)
 
-**ClamAV** ile tarama için iki yaklaşım:
+**ClamAV** entegrasyonu, yüklenen dosyaların güvenliğini sağlamak amacıyla kullanılmaktadır. Bu projede **Event-driven** yaklaşım benimsenmiştir:
 
-1. **API upload** yolunda dosyayı geçici dizine indir → tarat → temizse MinIO’ya yaz.
-2. **Event-driven**: MinIO bucket notification (webhook/kuyruk) ile yeni nesne → işleyici servis (Hangfire/Worker) ClamAV ile tarar; temiz değilse siler ve audit’e işler.
-Bu projede Event-driven seçilmiştir.
+- MinIO'ya yeni bir nesne yüklendiğinde, bir bildirim (webhook/kuyruk) tetiklenir.
+- Bu bildirim, `SBSaaS.Worker` servisi tarafından işlenir.
+- `SBSaaS.Worker` servisi, ClamAV daemon'a (Docker Compose'da `clamav` servisi olarak tanımlanmıştır) bağlanarak yeni yüklenen dosyayı tarar.
+- Tarama sonucuna göre:
+    - Dosya temizse, işlem devam eder.
+    - Dosya virüslü ise, dosya silinir ve denetim (audit) kayıtlarına işlenir.
+- `SBSaaS.Worker` servisi, ClamAV ile iletişim kurmak için `ClamAV__Host` ve `ClamAV__Port` ortam değişkenlerini kullanır.
 
 ---
 
