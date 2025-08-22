@@ -2,6 +2,7 @@ using SBSaaS.Application.Interfaces;
 using System.IO;
 using System.Threading.Tasks;
 using ClamAV.Net.Client;
+using ClamAV.Net.Client.Results;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -26,26 +27,26 @@ public class ClamAVScanner : IAntivirusScanner
         try
         {
             _logger.LogInformation("Connecting to ClamAV at {Host}:{Port} for scanning.", clamAvHost, clamAvPort);
-            using (var client = new ClamAVClient(clamAvHost, clamAvPort))
+            var clamAvUri = new System.Uri($"tcp://{clamAvHost}:{clamAvPort}");
+            var client = ClamAvClient.Create(clamAvUri);
+
+            // Ensure the stream is at the beginning
+            if (stream.CanSeek)
             {
-                // Ensure the stream is at the beginning
-                if (stream.CanSeek)
-                {
-                    stream.Position = 0;
-                }
+                stream.Position = 0;
+            }
 
-                var scanResult = await client.ScanAsync(stream);
+            var scanResult = await client.ScanDataAsync(stream);
 
-                if (scanResult.IsVirus)
-                {
-                    _logger.LogWarning("ClamAV scan detected virus: {VirusName}", scanResult.VirusName);
-                    return false; // Infected
-                }
-                else
-                {
-                    _logger.LogInformation("ClamAV scan completed. File is clean.");
-                    return true; // Clean
-                }
+            if (scanResult.Infected)
+            {
+                _logger.LogWarning("ClamAV scan detected virus: {VirusName}", scanResult.VirusName);
+                return false; // Infected
+            }
+            else
+            {
+                _logger.LogInformation("ClamAV scan completed. File is clean.");
+                return true; // Clean
             }
         }
         catch (System.Exception ex)
