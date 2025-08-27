@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SBSaaS.Infrastructure.Persistence;
@@ -12,9 +13,11 @@ using SBSaaS.Infrastructure.Persistence;
 namespace SBSaaS.Infrastructure.Migrations
 {
     [DbContext(typeof(SbsDbContext))]
-    partial class SbsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250827095219_InitialSchema")]
+    partial class InitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,0 +1,69 @@
+# === GENEL AYARLAR ===
+
+## Proje genelinde kullanılacak zaman dilimi
+TZ=Europe/Istanbul
+
+# === DATABASE AYARLARI ===
+
+## POSTGRESQL AYARLARI
+### Veritabanı adı
+POSTGRES_DB=sbsaas_db
+#### Veritabanı yönetici kullanıcı adı
+POSTGRES_USER=sbsaas_user
+### Veritabanı yönetici şifresi
+POSTGRES_PASSWORD= 0893e5ed-9066-4219-8d68-0d3fe9396f2f
+### Host makinesinde PostgreSQL'in yayınlanacağı port
+POSTGRES_PORT=5437
+
+# === STORAGE AYARLARI ===
+
+## MINIO OBJECT STORAGE AYARLARI (DAĞITIK MOD)
+### MinIO erişim anahtarı (Kullanıcı adı gibi)
+MINIO_ROOT_USER=sbsaas_storage_admin
+### MinIO gizli anahtarı (Şifre gibi)
+MINIO_ROOT_PASSWORD=GucluMinioSifre2025!
+### Host makinesinde MinIO API'sinin yayınlanacağı port
+MINIO_API_PORT=9010
+### Host makinesinde MinIO Web Arayüzü'nün yayınlanacağı port
+MINIO_CONSOLE_PORT=9011
+### MinIO için oluşturulacak varsayılan bucket adı
+MINIO_BUCKET=sbsaas-objects
+
+
+# === ANTIVIRUS AYARLARI ===
+
+## CLAMAV Antivirüs Ayarları
+# ClamAV servisinin host makinesinde yayınlanacağı port
+CLAMAV_PORT=3310
+CLAMAV_HOST=clamav
+
+
+# === MESSAGES AYARLARI ===
+
+## RABBITMQ Ayarları 
+RABBITMQ_USER=sbuser
+RABBITMQ_PASSWORD=sbpassword
+RABBITMQ_HOST=rabbitmq
+RABBITMQ_PORT=5672
+
+
+## === API ve WORKERAYARLARI ===
+
+## SBSAAS Api Ayarları 
+### API'nin host makinesinde yayınlanacağı port
+API_PORT=8088
+### JWT (JSON Web Token) için kullanılacak gizli anahtar. BU DEĞER MUTLAKA DEĞİŞTİRİLMELİDİR.
+JWT_SECRET=3M&s@@@fa-ATATURK-4a9b-b824-6a103153d469
+### JWT Token'ı yayınlayan (issuer) taraf
+JWT_ISSUER=sbsaas_api
+### JWT Token'ını kullanacak hedef kitle (audience)
+JWT_AUDIENCE=sbsaas_clients
+
+## SBSAAS Worker AYARLARI 
+### Worker'ın host makinesinde yayınlanacağı port
+WORKER_PORT=8089
+
+
+
+
+

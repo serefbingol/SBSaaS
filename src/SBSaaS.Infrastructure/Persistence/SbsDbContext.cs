@@ -10,10 +10,11 @@ using SBSaaS.Domain.Entities.Invitations;
 using SBSaaS.Domain.Entities.Projects;
 using SBSaaS.Infrastructure.Audit;
 using SBSaaS.Infrastructure.Localization;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 
 namespace SBSaaS.Infrastructure.Persistence;
 
-public class SbsDbContext : IdentityDbContext<ApplicationUser>
+public class SbsDbContext : IdentityDbContext<ApplicationUser>, IDataProtectionKeyContext
 {
     private readonly ITenantContext _tenant;
 
@@ -28,6 +29,11 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<Invitation> Invitations => Set<Invitation>();
     public DbSet<Translation> Translations => Set<Translation>();
+    public DbSet<SBSaaS.Domain.Entities.File> Files => Set<SBSaaS.Domain.Entities.File>();
+
+    // Bu satırı diğer DbSet'lerinizin yanına ekleyin:
+    // ASP.NET Core Data Protection anahtarlarını saklamak için kullanılır.
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -84,6 +90,24 @@ public class SbsDbContext : IdentityDbContext<ApplicationUser>
             b.ToTable("i18n_translations");
             b.HasKey(x => x.Id);
             b.HasIndex(x => new { x.Key, x.Culture }).IsUnique();
+        });
+
+        b.Entity<SBSaaS.Domain.Entities.File>(e =>
+        {
+            e.ToTable("Files"); // Explicitly set table name in public schema
+            e.HasKey(x => x.Id);
+            e.Property(x => x.StorageObjectName).IsRequired();
+            e.Property(x => x.BucketName).IsRequired();
+            e.Property(x => x.Checksum).IsRequired();
+            e.Property(x => x.ContentType).IsRequired();
+            e.Property(x => x.OriginalFileName).IsRequired();
+            e.Property(x => x.UploadedByUserId).IsRequired();
+
+            // Configure the JSONB column for PostgreSQL
+            e.Property(x => x.Metadata).HasColumnType("jsonb");
+
+            // Configure soft delete query filter
+            e.HasQueryFilter(x => !x.IsDeleted);
         });
 
         // Global query filter to apply tenancy rules.

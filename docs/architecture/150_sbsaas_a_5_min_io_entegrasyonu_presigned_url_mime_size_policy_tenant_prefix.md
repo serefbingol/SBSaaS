@@ -301,8 +301,8 @@ mc admin config set local/ api cors="*"     # geliştirme amaçlı; üretimde do
 
 **ClamAV** entegrasyonu, yüklenen dosyaların güvenliğini sağlamak amacıyla kullanılmaktadır. Bu projede **Event-driven** yaklaşım benimsenmiştir:
 
-- MinIO'ya yeni bir nesne yüklendiğinde, bir bildirim (webhook/kuyruk) tetiklenir.
-- Bu bildirim, `SBSaaS.Worker` servisi tarafından işlenir.
+- MinIO'ya yeni bir nesne yüklendiğinde, bir bildirim (genellikle bir mesaj kuyruğu aracılığıyla) tetiklenir.
+- Bu bildirim, `SBSaaS.Worker` servisi tarafından dinlenerek işlenir.
 - `SBSaaS.Worker` servisi, ClamAV daemon'a (Docker Compose'da `clamav` servisi olarak tanımlanmıştır) bağlanarak yeni yüklenen dosyayı tarar.
 - Tarama sonucuna göre:
     - Dosya temizse, işlem devam eder.

@@ -1,32 +1,83 @@
-using SBSaaS.Worker;
-using Minio;
-using SBSaaS.Application.Interfaces;
-using SBSaaS.Infrastructure.Storage;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
+using SBSaaS.Infrastructure;
+using System;
+using System.Threading.Tasks;
+using SBSaaS.Application.Interfaces;
+using SBSaaS.Worker.Services;
+using OpenTelemetry.Resources; // Added
+using OpenTelemetry.Trace; // Added
+using OpenTelemetry.Instrumentation.Runtime; // Added for runtime metrics
+using OpenTelemetry.Instrumentation.AspNetCore; // Added for ASP.NET Core instrumentation
+// Removed: using OpenTelemetry.Instrumentation.EntityFrameworkCore; 
+using OpenTelemetry.Instrumentation.Http; // Added for HTTP client instrumentation
+using OpenTelemetry.Exporter.OpenTelemetryProtocol; // Added for OTLP exporter
+// Removed: using OpenTelemetry.Instrumentation.Npgsql; 
+// Removed: using OpenTelemetry.Instrumentation.RabbitMQ; 
 
-var builder = WebApplication.CreateBuilder(args);
+namespace SBSaaS.Worker
+{
+    public class Program
+    {
+        public static async Task Main(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
 
-// Add services to the container.
-builder.Services.AddControllers();
-builder.Services.AddHostedService<Worker>();
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .Enrich.FromLogContext()
+                .CreateLogger();
 
-// MinIO Client Registration
-builder.Services.AddSingleton(sp => new MinioClient()
-    .WithEndpoint(builder.Configuration["Minio:Endpoint"]!)
-    .WithCredentials(builder.Configuration["Minio:AccessKey"]!, builder.Configuration["Minio:SecretKey"]!)
-    .WithSSL(bool.TryParse(builder.Configuration["Minio:UseSSL"], out var ssl) && ssl)
-    .Build());
+            try
+            {
+                Log.Information("Starting SBSaaS.Worker service.");
 
-// File Storage and Object Signer
-builder.Services.AddScoped<IFileStorage, MinioFileStorage>();
-builder.Services.AddScoped<IObjectSigner, MinioObjectSigner>();
+                var host = Host.CreateDefaultBuilder(args)
+                    .UseSerilog()
+                    .ConfigureServices((hostContext, services) =>
+                    {
+                        // Register Worker-specific TenantContext first
+                        services.AddScoped<ITenantContext, WorkerTenantContext>();
 
-// Antivirus Scanner
-builder.Services.AddScoped<IAntivirusScanner, ClamAVScanner>();
+                        // Add infrastructure services (DbContext, Repositories, MinIO, RabbitMQ Publisher etc.)
+                        services.AddInfrastructure(hostContext.Configuration);
 
-var app = builder.Build();
+                        // Add OpenTelemetry Tracing
+                        services.AddOpenTelemetry()
+                            .WithTracing(builder => builder
+                                .AddSource("SBSaaS.Worker") // Name your service
+                                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("SBSaaS.Worker"))
+                                .AddHttpClientInstrumentation() // Trace outgoing HTTP calls
+                                .AddAspNetCoreInstrumentation() // Trace incoming HTTP calls (if any, for web workers)
+                                //.AddEntityFrameworkCoreInstrumentation() // Removed
+                                //.AddNpgsql() // Removed
+                                //.AddRabbitMQInstrumentation() // Removed
+                                .AddOtlpExporter(options =>
+                                {
+                                    options.Endpoint = new Uri(hostContext.Configuration["OpenTelemetry:OtlpExporter:Endpoint"] ?? "http://localhost:4317");
+                                })
+                            );
 
-// Configure the HTTP request pipeline.
-app.MapControllers();
+                        // Register the main worker service that listens to the RabbitMQ queue
+                        services.AddHostedService<FileScanConsumerWorker>();
+                    })
+                    .Build();
 
-app.Run();
+                await host.RunAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "SBSaaS.Worker service terminated unexpectedly.");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+    }
+}

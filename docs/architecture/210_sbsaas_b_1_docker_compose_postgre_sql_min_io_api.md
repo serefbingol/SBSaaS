@@ -154,6 +154,8 @@ mc alias set local http://minio:9000 minioadmin minioadmin
 mc mb local/sbsaas || true
 mc anonymous set none local/sbsaas
 mc admin config set local/ api cors="[{'AllowedOrigin':['*'],'AllowedMethod':['GET','PUT','POST'],'AllowedHeader':['*'],'ExposeHeader':['ETag'],'MaxAgeSeconds':3000}]"
+
+
 ```
 
 > **Not**: Üretimde `AllowedOrigin` değerini sınırlayın.

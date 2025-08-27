@@ -9,8 +9,14 @@ using SBSaaS.Application.Interfaces;
 using SBSaaS.Infrastructure;
 using System.Globalization;
 using System.Threading.RateLimiting;
+using SBSaaS.Infrastructure.Localization;
 using SBSaaS.API.Localization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using SBSaaS.Domain.Entities;
+using SBSaaS.Infrastructure.Persistence;
+using SBSaaS.Infrastructure.Seed;
 
 
 
@@ -35,7 +41,7 @@ var locCfg = builder.Configuration.GetSection("Localization");
 var defaultCulture = locCfg["DefaultCulture"] ?? "tr-TR";
 var supported = locCfg.GetSection("SupportedCultures").Get<string[]>() ?? new[] { "tr-TR", "en-US", "de-DE" };
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddLocalization();
 
 builder.Services.AddControllers()
     .AddViewLocalization()
@@ -117,6 +123,29 @@ builder.Services.AddSwaggerGen();
 
 // 2. Build the application.
 var app = builder.Build();
+
+// === VERİTABANI SEED İŞLEMİ BAŞLANGICI ===
+// Uygulama her başladığında veritabanını başlangıç verileriyle doldurur.
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // Identity verilerini (roller ve admin kullanıcı) seed'le
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var logger = services.GetRequiredService<ILogger<Program>>(); // Program sınıfı için logger
+
+        await IdentitySeeder.SeedAsync(userManager, roleManager, logger);
+
+        logger.LogInformation("Identity veritabanı seed işlemi başarıyla tamamlandı.");
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Identity veritabanı seed işlemi sırasında bir hata oluştu.");
+    }
+}
 
 // 3. Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

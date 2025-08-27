@@ -1,103 +1,237 @@
 version: '3.8'
 
 services:
+  # ====================
+  # POSTGRES (PG17 + TSDB + PostGIS + pgAgent)
+  # ====================
   postgres:
-    container_name: sbsaas_postgre
-    build: ./db
+    container_name: sbsaas_postgres
+    image: sbsaas/postgres:17withtsgisagent
+    build:
+      context: ./postgres
+      dockerfile: postgres.Dockerfile
+    env_file:
+      - .env
+    command: postgres -c shared_preload_libraries='timescaledb'
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - TZ=${TZ}
-    ports:
-      - "${POSTGRES_PORT}:5432"
-    volumes:
-      - sbsaas_postgres_data:/var/lib/postgresql/data
-    networks:
-      sbsaas-internal-network:
-        ipv4_address: 172.28.0.10
-    restart: unless-stopped
-
-  minio1:
-    image: minio/minio:latest
-    container_name: sbsaas_minio1
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - TZ=${TZ}
-    command: server /data --console-address ":9001"
-    ports:
-      - "${MINIO_API_PORT}:9000"
-      - "${MINIO_CONSOLE_PORT}:9001"
-    volumes:
-      - sbsaas_minio_data:/data
-    networks:
-      sbsaas-internal-network:
-        ipv4_address: 172.28.0.21
-    restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h 127.0.0.1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - sbsaas_pgdata:/var/lib/postgresql/data
+    networks:
+      sbsaas-internal-network:
+        ipv4_address: ${POSTGRES_IP}
+      sbsaas-public-network:
+        ipv4_address: ${POSTGRES_PUBLIC_IP}
 
+  # ============
+  # RABBITMQ
+  # ============
+  rabbitmq:
+    container_name: sbsaas_rabbitmq
+    image: rabbitmq:4.0-management
+    env_file:
+      - .env
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 15s
+    ports:
+      - "${RABBITMQ_PORT}:5672"        # AMQP
+      - "${RABBITMQ_MGMT_PORT}:15672"  # Management UI
+    volumes:
+      - sbsaas_rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      sbsaas-internal-network:
+        ipv4_address: ${RABBITMQ_IP}
+
+  # ============
+  # CLAMAV
+  # ============
   clamav:
-    image: clamav/clamav:latest
     container_name: sbsaas_clamav
+    image: clamav/clamav:latest
+    env_file:
+      - .env
+    command: ["freshclam","-d","--foreground=true"]
+    depends_on:
+      - rabbitmq
+    healthcheck:
+      test: ["CMD-SHELL", "clamdscan --version || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
     ports:
       - "${CLAMAV_PORT}:3310"
     volumes:
       - sbsaas_clamav_db:/var/lib/clamav
     networks:
       sbsaas-internal-network:
-        ipv4_address: 172.28.0.30
-      sbsaas-public-network:
-        ipv4_address: 172.29.0.30
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "clamdscan", "--version"]
-      interval: 1m
-      timeout: 30s
-      retries: 3
+        ipv4_address: ${CLAMAV_IP}
 
+  # =======================
+  # MINIO (4-NODE CLUSTER)
+  # =======================
+  minio1:
+    container_name: sbsaas_minio1
+    image: minio/minio:latest
+    command: server http://${MINIO1_IP}:9000/data http://${MINIO2_IP}:9000/data http://${MINIO3_IP}:9000/data http://${MINIO4_IP}:9000/data --console-address ":9001"
+    env_file:
+      - .env
+    volumes:
+      - sbsaas_minio1_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/minio/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+    ports:
+      - "${MINIO_API_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
+    networks:
+      sbsaas-internal-network:
+        ipv4_address: ${MINIO1_IP}
+
+  minio2:
+    container_name: sbsaas_minio2
+    image: minio/minio:latest
+    command: server http://${MINIO1_IP}:9000/data http://${MINIO2_IP}:9000/data http://${MINIO3_IP}:9000/data http://${MINIO4_IP}:9000/data --console-address ":9001"
+    env_file:
+      - .env
+    volumes:
+      - sbsaas_minio2_data:/data
+    networks:
+      sbsaas-internal-network:
+        ipv4_address: ${MINIO2_IP}
+
+  minio3:
+    container_name: sbsaas_minio3
+    image: minio/minio:latest
+    command: server http://${MINIO1_IP}:9000/data http://${MINIO2_IP}:9000/data http://${MINIO3_IP}:9000/data http://${MINIO4_IP}:9000/data --console-address ":9001"
+    env_file:
+      - .env
+    volumes:
+      - sbsaas_minio3_data:/data
+    networks:
+      sbsaas-internal-network:
+        ipv4_address: ${MINIO3_IP}
+
+  minio4:
+    container_name: sbsaas_minio4
+    image: minio/minio:latest
+    command: server http://${MINIO1_IP}:9000/data http://${MINIO2_IP}:9000/data http://${MINIO3_IP}:9000/data http://${MINIO4_IP}:9000/data --console-address ":9001"
+    env_file:
+      - .env
+    volumes:
+      - sbsaas_minio4_data:/data
+    networks:
+      sbsaas-internal-network:
+        ipv4_address: ${MINIO4_IP}
+
+  # MINIO INIT (bucket + policy + RabbitMQ notify)
+  minio-init:
+    container_name: sbsaas_minio_init
+    image: minio/mc:latest
+    depends_on:
+      minio1:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "/init/minio-init.sh"]
+    env_file:
+      - .env
+    volumes:
+      - ./docker/minio/minio-init.sh:/init/minio-init.sh:ro
+    networks:
+      sbsaas-internal-network:
+        ipv4_address: ${MINIO_INIT_IP}
+
+  # ============
+  # API
+  # ============
   api:
     container_name: sbsaas_api
     build:
-      context: ..
-      dockerfile: docker/api.Dockerfile
+      context: .
+      dockerfile: ./api/api.Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+      - minio1
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:${API_HTTP_PORT}/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     ports:
-      - "${API_PORT}:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - TZ=${TZ}
-      # Connection strings and other secrets should be passed here
-      # Example:
-      # - ConnectionStrings__DefaultConnection=Host=172.28.0.10;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      # - Minio__Endpoint=http://172.28.0.21:9000
-      # - Clamav__Host=172.28.0.30
-      # - Clamav__Port=3310
+      - "${API_HTTP_PORT}:${API_HTTP_PORT}"
     networks:
       sbsaas-internal-network:
-        ipv4_address: 172.28.0.40
+        ipv4_address: ${API_IP}
       sbsaas-public-network:
-        ipv4_address: 172.29.0.40
+        ipv4_address: ${API_PUBLIC_IP}
+
+  # ============
+  # WORKER
+  # ============
+  worker:
+    container_name: sbsaas_worker
+    build:
+      context: .
+      dockerfile: ./worker/worker.Dockerfile
+    env_file:
+      - .env
     depends_on:
-      postgres:
-        condition: service_started
-      minio1:
+      rabbitmq:
         condition: service_healthy
       clamav:
+        condition: service_started
+      postgres:
         condition: service_healthy
-    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "ps -ef | grep SBSaaS.Worker.dll | grep -v grep || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      sbsaas-internal-network:
+        ipv4_address: ${WORKER_IP}
 
+# ======================
+# VOLUMES
+# ======================
 volumes:
-  sbsaas_postgres_data:
-    driver: local
-  sbsaas_minio_data:
-    driver: local
+  sbsaas_pgdata:
+  sbsaas_rabbitmq_data:
+  sbsaas_minio1_data:
+  sbsaas_minio2_data:
+  sbsaas_minio3_data:
+  sbsaas_minio4_data:
   sbsaas_clamav_db:
-    driver: local
 
+# ======================
+# NETWORKS
+# ======================
 networks:
   sbsaas-internal-network:
     driver: bridge

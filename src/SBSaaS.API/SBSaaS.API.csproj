@@ -20,6 +20,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
+    <PackageReference Include="Minio" Version="6.0.2" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
   </ItemGroup>
 
