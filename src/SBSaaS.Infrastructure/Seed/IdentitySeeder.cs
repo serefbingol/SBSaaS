@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using SBSaaS.Domain.Entities;
+using SBSaaS.Domain.Entities.Auth;
 
 namespace SBSaaS.Infrastructure.Seed;
 
@@ -45,7 +46,8 @@ public static class IdentitySeeder
                 UserName = adminEmail,
                 Email = adminEmail,
                 TenantId = systemTenantId,
-                DisplayName = "System Owner",
+                FirstName = "System",
+                LastName = "Owner",
                 EmailConfirmed = true // Geliştirme ortamı için e-posta doğrulaması atlanıyor.
             };
 

@@ -15,6 +15,11 @@ public class DesignTimeTenantContext : ITenantContext
     public bool IsTenantResolved => true;
 }
 
+public class DesignTimeCurrentUser : ICurrentUser
+{
+    public Guid? UserId => null; // Design-time operations don't have a user context.
+}
+
 public class SbsDbContextFactory : IDesignTimeDbContextFactory<SbsDbContext>
 {
     public SbsDbContext CreateDbContext(string[] args)
@@ -52,6 +57,6 @@ public class SbsDbContextFactory : IDesignTimeDbContextFactory<SbsDbContext>
         var optionsBuilder = new DbContextOptionsBuilder<SbsDbContext>();
         optionsBuilder.UseNpgsql(connectionString);
 
-        return new SbsDbContext(optionsBuilder.Options, new DesignTimeTenantContext());
+        return new SbsDbContext(optionsBuilder.Options, new DesignTimeTenantContext(), new DesignTimeCurrentUser());
     }
 }

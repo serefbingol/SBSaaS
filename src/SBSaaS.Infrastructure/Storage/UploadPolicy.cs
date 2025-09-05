@@ -1,31 +1,29 @@
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using SBSaaS.Application.Interfaces;
-using System;
-using System.Linq;
 
 namespace SBSaaS.Infrastructure.Storage;
 
+/// <summary>
+/// IUploadPolicy arayüzünün, MinioOptions'tan gelen yapılandırmaya göre
+/// dosya yükleme politikalarını uygulayan implementasyonu.
+/// </summary>
 public class UploadPolicy : IUploadPolicy
 {
-    private readonly IConfiguration _cfg;
-    public UploadPolicy(IConfiguration cfg) => _cfg = cfg;
+    private readonly MinioOptions _options;
+
+    public UploadPolicy(IOptions<MinioOptions> options)
+    {
+        _options = options.Value;
+    }
 
     public bool IsAllowed(string contentType, long sizeBytes)
     {
-        var allowed = _cfg.GetSection("Minio:Policy:AllowedMime").Get<string[]>() ?? Array.Empty<string>();
-        var maxBytes = (_cfg.GetValue<long?>("Minio:Policy:MaxSizeMB") ?? 25) * 1024 * 1024;
-
-        if (string.IsNullOrEmpty(contentType) || sizeBytes <= 0)
-            return false;
-
-        return allowed.Contains(contentType, StringComparer.OrdinalIgnoreCase) && sizeBytes <= maxBytes;
+        var maxSizeBytes = _options.Policy.MaxSizeMB * 1024 * 1024;
+        return _options.Policy.AllowedMime.Contains(contentType, StringComparer.OrdinalIgnoreCase) && sizeBytes <= maxSizeBytes;
     }
 
     public string BuildTenantPrefix(Guid tenantId, DateTimeOffset now)
     {
-        if (tenantId == Guid.Empty)
-            throw new ArgumentException("TenantId cannot be empty.", nameof(tenantId));
-
-        return $"tenants/{tenantId:D}/{now:yyyy/MM}/";
+        return $"tenant/{tenantId:D}/{now:yyyy/MM}/";
     }
 }

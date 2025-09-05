@@ -22,7 +22,7 @@ namespace SBSaaS.Application.Events
         /// <summary>
         /// Olayın ilgili olduğu iş modülü (örn: "FileUploads", "Billing").
         /// </summary>
-        public string Module { get; set; }
+        public string? Module { get; set; }
 
 
         // --- Correlation & Context (İzlenebilirlik ve Güvenlik) ---
@@ -40,7 +40,7 @@ namespace SBSaaS.Application.Events
         /// <summary>
         /// Dosyayı yükleyerek bu olayı tetikleyen kullanıcının kimliği.
         /// </summary>
-        public string TriggeringUserId { get; set; }
+        public string? TriggeringUserId { get; set; }
 
 
         // --- File Specific Data (Dosyaya Özel Bilgiler) ---
@@ -53,22 +53,22 @@ namespace SBSaaS.Application.Events
         /// <summary>
         /// Dosyanın MinIO'da bulunduğu bucket'ın adı.
         /// </summary>
-        public string BucketName { get; set; }
+        public string? BucketName { get; set; }
 
         /// <summary>
         /// Dosyanın MinIO'daki tam yolu ve adı (Sizin "StorageObjectKey" önerinizi karşılar).
         /// </summary>
-        public string StorageObjectName { get; set; }
+        public string? StorageObjectName { get; set; }
 
         /// <summary>
         /// Dosyanın kullanıcı tarafından yüklenen orijinal adı.
         /// </summary>
-        public string OriginalFileName { get; set; }
+        public string? OriginalFileName { get; set; }
 
         /// <summary>
         /// Dosyanın MIME türü (örn: "image/png").
         /// </summary>
-        public string ContentType { get; set; }
+        public string? ContentType { get; set; }
 
         /// <summary>
         /// Dosyanın byte cinsinden boyutu.

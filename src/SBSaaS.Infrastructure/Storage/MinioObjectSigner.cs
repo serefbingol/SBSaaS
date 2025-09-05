@@ -1,16 +1,20 @@
 using Minio;
 using Minio.DataModel.Args;
 using SBSaaS.Application.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SBSaaS.Infrastructure.Storage;
 
+/// <summary>
+/// IObjectSigner arayüzünün, MinIO SDK'sını kullanarak presigned URL üreten implementasyonu.
+/// </summary>
 public class MinioObjectSigner : IObjectSigner
 {
-    private readonly IMinioClient _client;
-    public MinioObjectSigner(IMinioClient client) => _client = client;
+    private readonly IMinioClient _minioClient;
+
+    public MinioObjectSigner(IMinioClient minioClient)
+    {
+        _minioClient = minioClient;
+    }
 
     public async Task<string> PresignPutAsync(string bucket, string objectName, TimeSpan expiry, string? contentType, CancellationToken ct)
     {
@@ -18,7 +22,8 @@ public class MinioObjectSigner : IObjectSigner
             .WithBucket(bucket)
             .WithObject(objectName)
             .WithExpiry((int)expiry.TotalSeconds);
-        return await _client.PresignedPutObjectAsync(args);
+
+        return await _minioClient.PresignedPutObjectAsync(args).ConfigureAwait(false);
     }
 
     public async Task<string> PresignGetAsync(string bucket, string objectName, TimeSpan expiry, CancellationToken ct)
@@ -27,6 +32,7 @@ public class MinioObjectSigner : IObjectSigner
             .WithBucket(bucket)
             .WithObject(objectName)
             .WithExpiry((int)expiry.TotalSeconds);
-        return await _client.PresignedGetObjectAsync(args);
+
+        return await _minioClient.PresignedGetObjectAsync(args).ConfigureAwait(false);
     }
 }

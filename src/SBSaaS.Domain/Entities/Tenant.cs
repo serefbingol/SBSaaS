@@ -1,15 +1,18 @@
+using SBSaaS.Domain.Common;
+
 namespace SBSaaS.Domain.Entities;
 
-public class Tenant
+public class Tenant : BaseAuditableEntity
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = default!;
-    public string? Culture { get; set; } // örn: "tr-TR"
-    public string? UiCulture { get; set; }
-    public string? TimeZone { get; set; } // IANA/Windows TZ
+    public string Name { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
 
-    public static Tenant From(string v)
-    {
-        throw new NotImplementedException();
-    }
+    // Veritabanı başına kiracı senaryoları için, şimdilik opsiyonel.
+    //public string? ConnectionString { get; set; }
+
+    // A4 - Localization dokümanından gelen ayarlar
+    public string? Culture { get; set; }
+    public string? UiCulture { get; set; }
+    public string? TimeZone { get; set; }
 }
+

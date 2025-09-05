@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SBSaaS.Domain.Entities;
+using SBSaaS.Domain.Entities.Auth;
 using System.Security.Claims;
 
 namespace SBSaaS.API.Controllers;

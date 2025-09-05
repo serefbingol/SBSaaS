@@ -7,15 +7,11 @@ using System;
 using System.Threading.Tasks;
 using SBSaaS.Application.Interfaces;
 using SBSaaS.Worker.Services;
-using OpenTelemetry.Resources; // Added
-using OpenTelemetry.Trace; // Added
-using OpenTelemetry.Instrumentation.Runtime; // Added for runtime metrics
-using OpenTelemetry.Instrumentation.AspNetCore; // Added for ASP.NET Core instrumentation
-// Removed: using OpenTelemetry.Instrumentation.EntityFrameworkCore; 
-using OpenTelemetry.Instrumentation.Http; // Added for HTTP client instrumentation
-using OpenTelemetry.Exporter.OpenTelemetryProtocol; // Added for OTLP exporter
-// Removed: using OpenTelemetry.Instrumentation.Npgsql; 
-// Removed: using OpenTelemetry.Instrumentation.RabbitMQ; 
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Quartz;
+using SBSaaS.Worker.Jobs;
+
 
 namespace SBSaaS.Worker
 {
@@ -41,29 +37,65 @@ namespace SBSaaS.Worker
                     .UseSerilog()
                     .ConfigureServices((hostContext, services) =>
                     {
-                        // Register Worker-specific TenantContext first
+                        // Worker'a özel, her mesaj işleme kapsamında (scope) yeniden oluşturulacak
+                        // ve içeriği dinamik olarak doldurulacak context servisleri.
+                        services.AddScoped<ICurrentUser, WorkerUserContext>();
                         services.AddScoped<ITenantContext, WorkerTenantContext>();
 
-                        // Add infrastructure services (DbContext, Repositories, MinIO, RabbitMQ Publisher etc.)
+                        // Altyapı servislerini (DbContext, MinIO, ClamAV, vb.) kaydet.
                         services.AddInfrastructure(hostContext.Configuration);
 
-                        // Add OpenTelemetry Tracing
+                        // Faz 4: Periyodik görevler için Quartz.NET'i yapılandır
+                        services.AddQuartz(q =>
+                        {
+                            // 1. DailyAggregationJob: Ham olayları günlük olarak toplar.
+                            // Her gece 01:00'de çalışacak şekilde zamanla.
+                            var dailyJobKey = new JobKey(nameof(DailyAggregationJob));
+                            q.AddJob<DailyAggregationJob>(opts => opts.WithIdentity(dailyJobKey));
+                            q.AddTrigger(opts => opts
+                                .ForJob(dailyJobKey)
+                                .WithIdentity($"{nameof(DailyAggregationJob)}-trigger")
+                                .WithCronSchedule("0 0 1 * * ?")); // Cron: Her gün saat 01:00:00
+
+                            // 2. PeriodAggregationJob: Günlük özetleri fatura dönemine göre toplar.
+                            // Her gece 02:00'de, yani günlük toplama bittikten sonra çalışacak şekilde zamanla.
+                            var periodJobKey = new JobKey(nameof(PeriodAggregationJob));
+                            q.AddJob<PeriodAggregationJob>(opts => opts.WithIdentity(periodJobKey));
+                            q.AddTrigger(opts => opts
+                                .ForJob(periodJobKey)
+                                .WithIdentity($"{nameof(PeriodAggregationJob)}-trigger")
+                                .WithCronSchedule("0 0 2 * * ?")); // Cron: Her gün saat 02:00:00
+
+                            // 3. PeriodClosingJob: Biten dönemleri kapatır ve aşımları hesaplar.
+                            // Her gece 03:00'te, yani dönemsel toplama da bittikten sonra çalışacak şekilde zamanla.
+                            var closingJobKey = new JobKey(nameof(PeriodClosingJob));
+                            q.AddJob<PeriodClosingJob>(opts => opts.WithIdentity(closingJobKey));
+                            q.AddTrigger(opts => opts
+                                .ForJob(closingJobKey)
+                                .WithIdentity($"{nameof(PeriodClosingJob)}-trigger")
+                                .WithCronSchedule("0 0 3 * * ?")); // Cron: Her gün saat 03:00:00
+                        });
+
+                        // Quartz.NET'in bir IHostedService olarak çalışmasını sağla
+                        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+                        // Dağıtık izleme (Distributed Tracing) için OpenTelemetry yapılandırması.
+                        // Bu, bir isteğin API'den Worker'a olan yolculuğunu takip etmeyi sağlar.
                         services.AddOpenTelemetry()
                             .WithTracing(builder => builder
-                                .AddSource("SBSaaS.Worker") // Name your service
+                                .AddSource("SBSaaS.Worker") // Worker'a özel aktiviteler için kaynak adı.
                                 .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("SBSaaS.Worker"))
-                                .AddHttpClientInstrumentation() // Trace outgoing HTTP calls
-                                .AddAspNetCoreInstrumentation() // Trace incoming HTTP calls (if any, for web workers)
-                                //.AddEntityFrameworkCoreInstrumentation() // Removed
-                                //.AddNpgsql() // Removed
-                                //.AddRabbitMQInstrumentation() // Removed
+                                .AddHttpClientInstrumentation() // MinIO ve ClamAV gibi servislere yapılan HTTP çağrılarını izler.                                
+                                .AddEntityFrameworkCoreInstrumentation(opt => opt.SetDbStatementForText = true) // EF Core komutlarını izler.
+                                // .AddRabbitMQInstrumentation() // RabbitMQ'dan mesaj alma işlemlerini izler. (Not available in OpenTelemetry .NET)
                                 .AddOtlpExporter(options =>
                                 {
+                                    // İzleme verilerini toplayıcıya (collector) gönderir.
                                     options.Endpoint = new Uri(hostContext.Configuration["OpenTelemetry:OtlpExporter:Endpoint"] ?? "http://localhost:4317");
                                 })
                             );
 
-                        // Register the main worker service that listens to the RabbitMQ queue
+                        // RabbitMQ kuyruğunu dinleyen ana worker servisini kaydet.
                         services.AddHostedService<FileScanConsumerWorker>();
                     })
                     .Build();

@@ -1,9 +1,9 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace SBSaaS.Application.Interfaces;
 
+/// <summary>
+/// Depolama servisindeki nesneler için güvenli, zaman aşımına uğrayan URL'ler (presigned URL)
+/// oluşturma işlemini soyutlayan arayüz.
+/// </summary>
 public interface IObjectSigner
 {
     Task<string> PresignPutAsync(string bucket, string objectName, TimeSpan expiry, string? contentType, CancellationToken ct);

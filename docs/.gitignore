@@ -1,0 +1,30 @@
+# Mac
+.DS_Store
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Visual Studio
+.vs/
+
+# User-specific files
+*.suo
+*.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Docker - Environment variables
+**/[Dd]ocker/**/.env
+
+# Secrets
+secrets.json
+user-secrets.json
+
+# Logs
+logs/
+*.log

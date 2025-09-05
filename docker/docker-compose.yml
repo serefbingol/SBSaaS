@@ -24,14 +24,13 @@ services:
       retries: 10
       start_period: 20s
     ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - sbsaas_pgdata:/var/lib/postgresql/data
     networks:
       sbsaas-internal-network:
         ipv4_address: ${POSTGRES_IP}
-      sbsaas-public-network:
-        ipv4_address: ${POSTGRES_PUBLIC_IP}
+
 
   # ============
   # RABBITMQ
@@ -67,15 +66,15 @@ services:
     image: clamav/clamav:latest
     env_file:
       - .env
-    command: ["freshclam","-d","--foreground=true"]
-    depends_on:
-      - rabbitmq
     healthcheck:
-      test: ["CMD-SHELL", "clamdscan --version || exit 1"]
+      # Healthcheck, 'clamd' servisinin ayakta ve cevap verir durumda olup olmadığını kontrol edecek şekilde güncellendi.
+      # Servisin ilk defa çalıştırıldığında virüs veritabanını indirmesi uzun sürebilir.
+      # Bu nedenle start_period, ilk indirme işlemine zaman tanımak için artırıldı.
+      test: ["CMD", "clamdscan", "--ping"]
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 30s
+      start_period: 350s
     ports:
       - "${CLAMAV_PORT}:3310"
     volumes:
@@ -83,6 +82,8 @@ services:
     networks:
       sbsaas-internal-network:
         ipv4_address: ${CLAMAV_IP}
+      sbsaas-public-network:
+        ipv4_address: ${CLAMAV_PUBLIC_IP}
 
   # =======================
   # MINIO (4-NODE CLUSTER)
@@ -100,7 +101,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 15
-      start_period: 20s
+      start_period: 60s
     ports:
       - "${MINIO_API_PORT}:9000"
       - "${MINIO_CONSOLE_PORT}:9001"
@@ -147,17 +148,22 @@ services:
   # MINIO INIT (bucket + policy + RabbitMQ notify)
   minio-init:
     container_name: sbsaas_minio_init
-    image: minio/mc:latest
+    build:
+      context: ./minio-init
+      dockerfile: minio-init.Dockerfile
     depends_on:
       minio1:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    # Script'in başlangıç anındaki olası zamanlama sorunlarına karşı (örn: minio tam hazır değilken)
+    # başarısız olması durumunda yeniden denemesini sağlamak için bu kuralı ekliyoruz.
+    restart: on-failure
     entrypoint: ["/bin/sh", "/init/minio-init.sh"]
     env_file:
       - .env
     volumes:
-      - ./docker/minio/minio-init.sh:/init/minio-init.sh:ro
+      - ./minio/minio-init.sh:/init/minio-init.sh:ro
     networks:
       sbsaas-internal-network:
         ipv4_address: ${MINIO_INIT_IP}
@@ -168,22 +174,29 @@ services:
   api:
     container_name: sbsaas_api
     build:
-      context: .
-      dockerfile: ./api/api.Dockerfile
+      context: ..
+      dockerfile: docker/api/api.Dockerfile
     env_file:
       - .env
+    environment:
+      # .NET Configuration'ın okuyabilmesi için ConnectionStrings:Postgres anahtarını oluşturuyoruz.
+      # Docker Compose, servis adlarını DNS olarak çözümlediği için host olarak 'postgres' kullanıyoruz.
+      - ConnectionStrings__Postgres=Host=${POSTGRES_IP};Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - Minio__Endpoint=${MINIO_ENDPOINT}
+      - Minio__Bucket=${MINIO_BUCKET}
     depends_on:
       - postgres
       - rabbitmq
       - minio1
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:${API_HTTP_PORT}/healthz"]
+      # Healthcheck, konteynerin İÇİNDEKİ porta (8080) istek atmalıdır.
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8080/healthz"]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 30s
     ports:
-      - "${API_HTTP_PORT}:${API_HTTP_PORT}"
+      - "${API_HTTP_PORT}:8080"
     networks:
       sbsaas-internal-network:
         ipv4_address: ${API_IP}
@@ -196,15 +209,28 @@ services:
   worker:
     container_name: sbsaas_worker
     build:
-      context: .
-      dockerfile: ./worker/worker.Dockerfile
+      context: ..
+      dockerfile: docker/worker/worker.Dockerfile
     env_file:
       - .env
+    environment:
+      # .NET Configuration'ın okuyabilmesi için ConnectionStrings:Postgres anahtarını oluşturuyoruz.
+      - ConnectionStrings__Postgres=Host=${POSTGRES_IP};Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      # FileScanConsumerWorker'ın RabbitMQ'ya bağlanabilmesi için gerekli ortam değişkenleri.
+      # .NET, çift alt çizgi'yi (__) hiyerarşik yapılandırmada iki noktaya (:) dönüştürür (RabbitMQ:Host).
+      - RabbitMQ__Host=${RABBITMQ_IP}
+      - RabbitMQ__User=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+      - RabbitMQ__Port=${RABBITMQ_PORT}
+      - RabbitMQ__Exchange=${RABBITMQ_EXCHANGE}
+      # Worker'ın ClamAV servisine bağlanabilmesi için gerekli ortam değişkenleri.
+      - ClamAV__Host=clamav
+      - ClamAV__Port=3310
     depends_on:
       rabbitmq:
         condition: service_healthy
       clamav:
-        condition: service_started
+        condition: service_healthy
       postgres:
         condition: service_healthy
     healthcheck:

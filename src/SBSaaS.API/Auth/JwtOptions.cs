@@ -1,5 +1,8 @@
 namespace SBSaaS.API.Auth;
 
+/// <summary>
+/// appsettings.json dosyasındaki "Jwt" bölümünü temsil eden ayarlar sınıfı.
+/// </summary>
 public sealed class JwtOptions
 {
     public const string SectionName = "Jwt";

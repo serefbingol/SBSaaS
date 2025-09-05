@@ -14,13 +14,15 @@ using SBSaaS.API.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using SBSaaS.Domain.Entities;
 using SBSaaS.Infrastructure.Persistence;
 using SBSaaS.Infrastructure.Seed;
+using SBSaaS.Domain.Entities.Auth;
 
 
 
 using SBSaaS.API.Services;
+using SBSaaS.Application.Features;
+using SBSaaS.Infrastructure.Features;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,13 +30,35 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Add services to the container.
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Tenant Context – basit header temelli örnek (X-Tenant-Id)
+// HTTP isteği bağlamına erişim için temel servis.
+// TenantContext ve UserContext bu servise bağımlıdır.
+builder.Services.AddHttpContextAccessor();
+
+// Kiracı ve Kullanıcı bağlam servisleri. Her istek için o isteğe özel (scoped) olarak oluşturulurlar.
 builder.Services.AddScoped<ITenantContext, HeaderTenantContext>();
-builder.Services.AddScoped<IUserContext, HttpContextUserContext>();
+builder.Services.AddScoped<ICurrentUser, HttpContextUserContext>();
+
+// Plan özellikleri servisleri
+builder.Services.AddScoped<IFeatureService, FeatureService>();
 
 // JwtOptions
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 builder.Services.AddSingleton<ITokenService, TokenService>();
+
+// ASP.NET Core Identity'yi özel ApplicationUser sınıfımızla yapılandır.
+// Bu, kullanıcı yönetimi, roller ve parola politikaları gibi özellikleri sağlar.
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        // Parola ayarlarını appsettings.json'dan oku.
+        builder.Configuration.GetSection("Identity:Password").Bind(options.Password);
+
+        // Diğer Identity ayarları.
+        options.SignIn.RequireConfirmedAccount = builder.Configuration.GetValue<bool>("Identity:RequireConfirmedEmail");
+        // Çoklu kiracılıkta e-postanın benzersizliği DbContext içinde TenantId ile birlikte ele alındığı için bu ayar false olmalıdır.
+        options.User.RequireUniqueEmail = false;
+    })
+    .AddEntityFrameworkStores<SbsDbContext>()
+    .AddDefaultTokenProviders(); // Parola sıfırlama gibi işlemler için token sağlayıcılarını ekler.
 
 // Localization
 var locCfg = builder.Configuration.GetSection("Localization");
@@ -77,15 +101,14 @@ builder.Services.AddAuthentication(o =>
 })
 .AddJwtBearer(o =>
 {
-    var cfg = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()!;
     o.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = cfg.Issuer,
-        ValidAudience = cfg.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(cfg.SigningKey))
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]!))
     };
 })
 .AddGoogle(opt =>

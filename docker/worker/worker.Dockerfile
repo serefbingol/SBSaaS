@@ -1,19 +1,24 @@
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-WORKDIR /app
-
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY src/SBSaaS.Worker/SBSaaS.Worker.csproj src/SBSaaS.Worker/
-COPY src/SBSaaS.Application/SBSaaS.Application.csproj src/SBSaaS.Application/
-COPY src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj src/SBSaaS.Infrastructure/
-COPY src/SBSaaS.Domain/SBSaaS.Domain.csproj src/SBSaaS.Domain/
-COPY src/SBSaaS.Common/SBSaaS.Common.csproj src/SBSaaS.Common/
-RUN dotnet restore "src/SBSaaS.Worker/SBSaaS.Worker.csproj"
 
-COPY . .
-RUN dotnet publish "src/SBSaaS.Worker/SBSaaS.Worker.csproj" -c Release -o /app/publish --self-contained false
+# .csproj dosyalarını kopyalayarak Docker katman önbelleğinden (layer cache) faydalanalım.
+COPY src/SBSaaS.Worker/SBSaaS.Worker.csproj SBSaaS.Worker/
+COPY src/SBSaaS.Application/SBSaaS.Application.csproj SBSaaS.Application/
+COPY src/SBSaaS.Infrastructure/SBSaaS.Infrastructure.csproj SBSaaS.Infrastructure/
+COPY src/SBSaaS.Domain/SBSaaS.Domain.csproj SBSaaS.Domain/
+COPY src/SBSaaS.Common/SBSaaS.Common.csproj SBSaaS.Common/
 
-FROM base AS final
+# Bağımlılıkları geri yükle
+RUN dotnet restore "SBSaaS.Worker/SBSaaS.Worker.csproj"
+
+# Geri kalan tüm kaynak kodunu kopyala
+COPY src/. .
+
+# Uygulamayı yayınla (publish)
+WORKDIR "/src/SBSaaS.Worker"
+RUN dotnet publish "SBSaaS.Worker.csproj" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "SBSaaS.Worker.dll"]

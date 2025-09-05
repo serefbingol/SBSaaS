@@ -15,10 +15,13 @@ public class SbsDbContextTests
     private readonly Guid _tenantA_Id = Guid.NewGuid();
     private readonly Guid _tenantB_Id = Guid.NewGuid();
     private readonly Mock<ITenantContext> _mockTenantContext;
+    private readonly Mock<ICurrentUser> _mockCurrentUser;
 
     public SbsDbContextTests()
     {
         _mockTenantContext = new Mock<ITenantContext>();
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(u => u.UserId).Returns(Guid.NewGuid()); // Testler için varsayılan bir kullanıcı ata
     }
 
     private SbsDbContext CreateDbContext()
@@ -27,7 +30,7 @@ public class SbsDbContextTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Her test için temiz DB
             .Options;
 
-        return new SbsDbContext(options, _mockTenantContext.Object);
+        return new SbsDbContext(options, _mockTenantContext.Object, _mockCurrentUser.Object);
     }
 
     [Fact]
@@ -44,7 +47,7 @@ public class SbsDbContextTests
 
         // Assert
         Assert.Equal(_tenantA_Id, project.TenantId);
-        Assert.NotEqual(default, project.CreatedUtc);
+        Assert.NotEqual(default, project.CreatedAt); // 'CreatedUtc' -> 'CreatedAt' olarak düzeltildi
     }
 
     [Fact]

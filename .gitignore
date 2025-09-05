@@ -30,6 +30,7 @@ TestResults/
 # Secrets files that should not be committed
 appsettings.Development.json
 secrets.json
+.env
 
 # =========================================
 # Node.js

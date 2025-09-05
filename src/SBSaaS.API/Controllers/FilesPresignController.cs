@@ -1,72 +1,60 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using SBSaaS.API.Contracts.Files;
+using SBSaaS.API.Filters;
 using SBSaaS.Application.Interfaces;
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using SBSaaS.Infrastructure.Storage;
 
 namespace SBSaaS.API.Controllers;
 
-// Data Transfer Objects (DTOs) for Presigned URL operations
-public record PresignUploadRequest(string FileName, string ContentType, long SizeBytes);
-public record PresignUploadResponse(string Url, string ObjectName, string Bucket, int ExpiresSeconds);
-public record PresignGetRequest(string ObjectName);
-public record PresignGetResponse(string Url, int ExpiresSeconds);
-
-
 [ApiController]
-[Route("api/v1/files/presign")]
-[Authorize]
+[Route("api/v1/files")]
+[Authorize] // Bu endpoint'e sadece kimliği doğrulanmış kullanıcılar erişebilir.
 public class FilesPresignController : ControllerBase
 {
-    private readonly IObjectSigner _signer;
-    private readonly IUploadPolicy _policy;
-    private readonly ITenantContext _tenant;
-    private readonly IConfiguration _cfg;
+    private readonly IUploadPolicy _uploadPolicy;
+    private readonly IObjectSigner _objectSigner;
+    private readonly ITenantContext _tenantContext;
+    private readonly MinioOptions _minioOptions;
 
-    public FilesPresignController(IObjectSigner signer, IUploadPolicy policy, ITenantContext tenant, IConfiguration cfg)
+    public FilesPresignController(
+        IUploadPolicy uploadPolicy,
+        IObjectSigner objectSigner,
+        ITenantContext tenantContext,
+        IOptions<MinioOptions> minioOptions)
     {
-        _signer = signer;
-        _policy = policy;
-        _tenant = tenant;
-        _cfg = cfg;
+        _uploadPolicy = uploadPolicy;
+        _objectSigner = objectSigner;
+        _tenantContext = tenantContext;
+        _minioOptions = minioOptions.Value;
     }
 
-    [HttpPost("upload")]
-    public async Task<IActionResult> PresignUpload([FromBody] PresignUploadRequest req, CancellationToken ct)
+    /// <summary>
+    /// Bir dosya yüklemek için geçici ve güvenli bir URL (presigned URL) oluşturur.
+    /// </summary>
+    /// <remarks>
+    /// İstemci (client), bu endpoint'ten aldığı URL'yi kullanarak dosyayı doğrudan
+    /// MinIO'ya bir HTTP PUT isteği ile yükler. Bu, sunucunun dosya verisini
+    /// kendi üzerinden geçirmesini engeller ve performansı artırır.
+    /// </remarks>
+    [HttpPost("presign-upload")]
+    [Quota("api_calls", 10000)] // Faz 4.2: Bu endpoint için günlük 10,000 çağrı limiti uygula.
+    [ProducesResponseType(typeof(PresignResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetPresignedUrlForUpload([FromBody] PresignRequest request, CancellationToken ct)
     {
-        // 1. Validate file policy
-        if (!_policy.IsAllowed(req.ContentType, req.SizeBytes))
-            return BadRequest(new { error = "File type or size not allowed." });
-
-        // 2. Generate a unique, tenant-isolated object name
-        var bucket = _cfg["Minio:Bucket"] ?? "sbs-objects";
-        var prefix = _policy.BuildTenantPrefix(_tenant.TenantId, DateTimeOffset.UtcNow);
-        var ext = Path.GetExtension(req.FileName);
-        var objectName = $"{prefix}{Guid.NewGuid():N}{ext}";
-
-        // 3. Create the presigned URL for PUT operation
-        var expSec = _cfg.GetValue<int>("Minio:Presign:UploadExpiresSeconds", 600);
-        var url = await _signer.PresignPutAsync(bucket, objectName, TimeSpan.FromSeconds(expSec), req.ContentType, ct);
-
-        return Ok(new PresignUploadResponse(url, objectName, bucket, expSec));
-    }
-
-    [HttpPost("get")]
-    public async Task<IActionResult> PresignGet([FromBody] PresignGetRequest req, CancellationToken ct)
-    {
-        // Security check: Ensure the requested object belongs to the current tenant.
-        if (!req.ObjectName.StartsWith($"tenants/{_tenant.TenantId:D}/"))
-        { 
-            return Forbid();
+        if (!_uploadPolicy.IsAllowed(request.ContentType, request.Size))
+        {
+            return BadRequest(new { error = $"Dosya türü ({request.ContentType}) veya boyutu ({request.Size} bytes) politikalara uygun değil." });
         }
 
-        var bucket = _cfg["Minio:Bucket"] ?? "sbs-objects";
-        var expSec = _cfg.GetValue<int>("Minio:Presign:DownloadExpiresSeconds", 600);
-        var url = await _signer.PresignGetAsync(bucket, req.ObjectName, TimeSpan.FromSeconds(expSec), ct);
+        var prefix = _uploadPolicy.BuildTenantPrefix(_tenantContext.TenantId, DateTimeOffset.UtcNow);
+        var objectName = $"{prefix}{Guid.NewGuid():N}{Path.GetExtension(request.FileName)}";
 
-        return Ok(new PresignGetResponse(url, expSec));
+        var expiry = TimeSpan.FromSeconds(_minioOptions.Presign.UploadExpiresSeconds);
+        var presignedUrl = await _objectSigner.PresignPutAsync(_minioOptions.Bucket, objectName, expiry, request.ContentType, ct);
+
+        return Ok(new PresignResponse(presignedUrl, objectName));
     }
 }
